@@ -29,6 +29,7 @@ void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *cleaner, SDL_
 	SDL_FillRect(where_to_draw, ship_tower, base_color);
 	Draw_Line(where_to_draw, shp->x + 80, shp->y, shp->x + 105, shp->y, 0xFFB533);
 	Draw_Line(where_to_draw, shp->x + 80, shp->y + shp->h - 1, shp->x + 105, shp->y + shp->h - 20, 0xFFB533);
+	Draw_Line(where_to_draw, shp->x + 30, shp->y + shp->h - 1, shp->x + 30, shp->y + shp->h - 100, 0xFFB533);
 	SDL_FillRect(where_to_draw, flag, 0xff7878);
 
 }
@@ -52,15 +53,15 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 			shipParts[2]->y = shipParts[0]->y + flag_OffsetY - 30;
 		}
 	}
-	if (shipParts[0]->x >= 1205) {
+	if (shipParts[0]->x >= 1190) {
 		for (int i = 0; i < 3; ++i) {
-			shipParts[i]->x = shipParts[i]->x - 1205;
+			shipParts[i]->x = shipParts[i]->x - 1150;
 		}
 	}
 }
 
 Ship::Ship() {
-	r.x = -10;
+	r.x = ranNum(0,1000);
 	r.y = 100;
 	r.w = 80;
 	r.h = 20;
@@ -78,7 +79,7 @@ Ship::Ship() {
 
 	movementDirrection = 1;
 	movementSpeed = ranNum(1,3);
-	cout<<"SPEEEEEEEED="<<movementSpeed<<endl;
+	cout<<"SPEEEEEEEEEEEEEED="<<movementSpeed<<endl;
 }
 
 void Ship::reDraw(SDL_Surface *screen) {
