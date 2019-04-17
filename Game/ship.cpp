@@ -46,16 +46,20 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 		shipParts[2]->y = shipParts[0]->y + flag_OffsetY;
 	} else {
 		if (leftright == 1) {
-			shipParts[2]->x = shipParts[0]->x + flag_OffsetX + 5;
+			shipParts[2]->x = shipParts[0]->x + flag_OffsetX +20;
 			shipParts[2]->y = shipParts[0]->y + flag_OffsetY - 30;
 		} else if (leftright == -1) {
 			shipParts[2]->x = shipParts[0]->x + flag_OffsetX + 50;
 			shipParts[2]->y = shipParts[0]->y + flag_OffsetY - 30;
 		}
 	}
-	if (shipParts[0]->x >= 1190) {
+	if ((shipParts[0]->x >= 1190)&&leftright==1) {
 		for (int i = 0; i < 3; ++i) {
 			shipParts[i]->x = shipParts[i]->x - 1150;
+		}
+	}if ((shipParts[0]->x < 100)&&leftright==-1) {
+		for (int i = 0; i < 3; ++i) {
+			shipParts[i]->x = shipParts[i]->x + 1100;
 		}
 	}
 }
@@ -73,11 +77,12 @@ Ship::Ship() {
 	tower.w = 55;
 	tower.h = 20;
 
-	flag.w = 45;
-	flag.h = 25;
+	flag.w = 30;
+	flag.h = 15;
 	r_new = r;
 
-	movementDirrection = 1;
+	movementDirrection = ranNum(-1,1);
+	if (movementDirrection==0)movementDirrection=1;
 	movementSpeed = ranNum(1,3);
 	cout<<"SPEEEEEEEEEEEEEED="<<movementSpeed<<endl;
 }

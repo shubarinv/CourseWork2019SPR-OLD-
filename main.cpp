@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 			ships[j].reDraw(screen);
 		}
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
-		SDL_Delay(15); // нужно для замедления движения корабля
+		SDL_Delay(10); // нужно для замедления движения корабля
 	}
 	SDL_Quit();
 	delete[] ships;
