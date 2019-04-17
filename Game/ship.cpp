@@ -52,7 +52,6 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 			shipParts[2]->y = shipParts[0]->y + flag_OffsetY - 30;
 		}
 	}
-	cout<<shipParts[0]->x<<endl;
 	if (shipParts[0]->x >= 1205) {
 		for (int i = 0; i < 3; ++i) {
 			shipParts[i]->x = shipParts[i]->x - 1205;

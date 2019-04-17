@@ -16,4 +16,4 @@ link_libraries (
         SDLmain # Sadly not included in SDL_LIBRARY variable
 )
 set(CMAKE_CXX_STANDARD 17)
-add_executable(CourseWork main.cpp Game/ship.cpp Game/ship.h Game/hud.cpp Game/hud.h Game/game_manager.cpp Game/game_manager.h Lib/list.h)
+add_executable(CourseWork main.cpp Game/ship.cpp Game/ship.h Game/hud.cpp Game/hud.h Game/game_manager.cpp Game/game_manager.h)

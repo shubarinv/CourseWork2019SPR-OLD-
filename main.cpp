@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <SDL/SDL.h>
 #include <SDL/SDL_draw.h>
+#include <iostream>
 #include "Game/ship.h"
 #include "Game/hud.h"
 #include "Game/game_manager.h"
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
 	HUD hud(screen);
 	GameManager gm;
 
-
+	Ship *ships = nullptr;
 	while (nextstep) // цикл перерисовки и обработки событий
 	{
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
@@ -59,16 +60,19 @@ int main(int argc, char *argv[]) {
 		}
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
-		if(gm.shipsLeft==0){
-			gm.setWave(gm.getWave()+1);
-			for (int i = 0; i < gm.getWave()*2; ++i) {
-				gm.shipsLeft=gm.getWave()*2;
-			}
+		if (gm.shipsLeft == 0) {
+			gm.setWave(gm.getWave() + 1);
+			gm.shipsLeft = gm.getWave() * 2;
+			cout << "spwn: " << gm.getWave() * 2 << endl;
+			ships = new Ship[gm.getWave() * 2];
 		}
-
+		for (int j = 0; j < gm.getWave() * 2; ++j) {
+			ships[j].reDraw(screen);
+		}
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		SDL_Delay(15); // нужно для замедления движения корабля
 	}
 	SDL_Quit();
+	delete[] ships;
 	return 0; /* Нормальное завершение */
 }
