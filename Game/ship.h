@@ -15,14 +15,14 @@ private:
 	SDL_Rect r, r_new, cleaner, tower, flag,* shipParts[3]{&r, &tower, &flag};
 
 	TBD movementSpeed;
-	int movementDirrection, health, price;
+	int movementDirrection, health, price,max_x=1280,max_y=720;
 	char type;
 
 	void shipCheck();
 
 public:
 	void reDraw(SDL_Surface*);
-	Ship(int,int);
+	Ship();
 	TBD getAllCoords();
 };
 

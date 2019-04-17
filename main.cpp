@@ -9,6 +9,7 @@
 #include <SDL/SDL_draw.h>
 #include "Game/ship.h"
 #include "Game/hud.h"
+#include "Game/game_manager.h"
 
 
 int main(int argc, char *argv[]) {
@@ -26,14 +27,15 @@ int main(int argc, char *argv[]) {
 		SDL_Quit();
 		return 1; /* Выход с одним кодом ошибки */
 	}
-	Ship sh(max_x,max_y);
-	bg.w=max_x;
-	bg.h=max_y;
-	bg.x=0;
-	bg.y=0;
-	SDL_FillRect(screen,&bg,0x0d34f6);
+	bg.w = max_x;
+	bg.h = max_y;
+	bg.x = 0;
+	bg.y = 0;
+	SDL_FillRect(screen, &bg, 0x0d34f6);
 	HUD hud(screen);
-	int i=0;
+	GameManager gm;
+
+
 	while (nextstep) // цикл перерисовки и обработки событий
 	{
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
@@ -55,9 +57,17 @@ int main(int argc, char *argv[]) {
 				//
 			}
 		}
-		i++;
-		hud.reDraw(i,1);
-		sh.reDraw(screen);
+		gm.updateActionRect(screen);
+		hud.reDraw(gm.getMoney(), gm.getWave());
+		if(gm.shipsLeft==0){
+			gm.setWave(gm.getWave()+1);
+			for (int i = 0; i < gm.getWave()*2; ++i) {
+				gm.shipsLeft=gm.getWave()*2;
+			}
+		}
+
+		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		SDL_Delay(15); // нужно для замедления движения корабля
 	}
 	SDL_Quit();
 	return 0; /* Нормальное завершение */

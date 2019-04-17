@@ -6,6 +6,18 @@
 
 using namespace std;
 
+#include <random>
+#include <iostream>
+
+int ranNum(int min,int max){
+	std::random_device rd;     // only used once to initialise (seed) engine
+	std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
+	std::uniform_int_distribution<int> uni(min,max); // guaranteed unbiased
+
+	auto random_integer = uni(rng);
+	return random_integer;
+}
+
 void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *cleaner, SDL_Rect *ship_tower, SDL_Rect *flag) {
 	Sint32 base_color = 0xFFB533; // Основной цвет (желтый)
 
@@ -40,24 +52,21 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 			shipParts[2]->y = shipParts[0]->y + flag_OffsetY - 30;
 		}
 	}
-	if (shipParts[0]->x>1205){
+	cout<<shipParts[0]->x<<endl;
+	if (shipParts[0]->x >= 1205) {
 		for (int i = 0; i < 3; ++i) {
-			shipParts[i]->x=shipParts[i]->x-1205;
+			shipParts[i]->x = shipParts[i]->x - 1205;
 		}
 	}
 }
 
-Ship::Ship(int max_x, int max_y) {
-
+Ship::Ship() {
 	r.x = -10;
 	r.y = 100;
 	r.w = 80;
 	r.h = 20;
 
-	cleaner.x=-30;
-	cleaner.y=100-40;
-	cleaner.h=150;
-	cleaner.w=max_x;
+
 
 	tower.x = max_x / 2;
 	tower.y = max_y / 2;
@@ -69,7 +78,8 @@ Ship::Ship(int max_x, int max_y) {
 	r_new = r;
 
 	movementDirrection = 1;
-	movementSpeed = 1;
+	movementSpeed = ranNum(1,3);
+	cout<<"SPEEEEEEEED="<<movementSpeed<<endl;
 }
 
 void Ship::reDraw(SDL_Surface *screen) {
@@ -78,12 +88,10 @@ void Ship::reDraw(SDL_Surface *screen) {
 	// (на сколько пикселей смещаться за один шаг цикла)
 
 	r = r_new; // обоновляем координаты
-	SDL_LockSurface(screen);
+
 	moveShip(shipParts, movementDirrection, movementSpeed);
 	drawShip(screen, &r, &cleaner, &tower, &flag);
 
 	//else throw("CANNOT draw");
-	SDL_UnlockSurface(screen);
-	SDL_UpdateRect(screen, 0, 0, 1280, 720);
-	SDL_Delay(movementSpeed * 10); // нужно для замедления движения корабля
+
 }
