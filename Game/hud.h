@@ -18,6 +18,7 @@ public:
 	void reDraw(int, int);
 
 	void drawText(string text, int textCoordX, int textCoordY,bool);
+	void drawText(string text, int textCoordX, int textCoordY);
 
 private:
 	void reDrawMoney(int);
@@ -25,7 +26,7 @@ private:
 	void reDrawWave(int);
 
 	TTF_Font *fnt = NULL;
-	SDL_Rect money_rect,wave_rect;
+	SDL_Rect money_rect,wave_rect,text_bg;
 	SDL_Color text_color;
 	SDL_Surface *text_surface = nullptr;
 	SDL_Surface * screen;

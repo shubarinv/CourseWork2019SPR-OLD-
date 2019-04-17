@@ -11,6 +11,7 @@
 #include "Game/ship.h"
 #include "Game/hud.h"
 #include "Game/game_manager.h"
+#include "Game/weapon.h"
 
 
 int main(int argc, char *argv[]) {
@@ -34,6 +35,7 @@ int main(int argc, char *argv[]) {
 	bg.y = 0;
 	SDL_FillRect(screen, &bg, 0x0d34f6);
 	HUD hud(screen);
+	Weapon weapon;
 	GameManager gm;
 
 	Ship *ships = nullptr;
@@ -48,8 +50,11 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN) {
 				//
 			}
-			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_DOWN) {
-				//
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
+				weapon.shoot();
+				gm.setMoney(gm.getMoney() - 10);
+				if (gm.getMoney() < 0)
+					hud.drawText("CONgRAts Вас отчислили за растрату гос имущества", max_x / 2 - 200, max_y / 2);
 			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT) {
 				//

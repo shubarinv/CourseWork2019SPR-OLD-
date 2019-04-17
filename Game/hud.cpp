@@ -34,7 +34,7 @@ void HUD::reDraw(int money, int wave) {
 }
 
 void HUD::reDrawMoney(int money) {
-	drawText("Money: " + to_string(money), 1, 685,true);
+	drawText("Money: " + to_string(money), 1, 685, true);
 }
 
 void HUD::reDrawWave(int wave) {
@@ -57,6 +57,22 @@ void HUD::drawText(std::string text, int textCoordX, int textCoordY, bool isMone
 		SDL_BlitSurface(text_surface, nullptr, screen, &money_rect);
 	else
 		SDL_BlitSurface(text_surface, nullptr, screen, &wave_rect);
+	SDL_FreeSurface(text_surface);
+	text_surface = nullptr;
+}
+
+void HUD::drawText(std::string text, int textCoordX, int textCoordY) {
+	text_color.r = 255;
+	text_color.g = 255;
+	text_color.b = 255;
+
+	text_bg.x=textCoordX;
+	text_bg.y=textCoordY;
+
+
+
+	text_surface = TTF_RenderUTF8_Solid(fnt, text.c_str(), text_color);
+	SDL_BlitSurface(text_surface, nullptr, screen, &text_bg);
 	SDL_FreeSurface(text_surface);
 	text_surface = nullptr;
 }
