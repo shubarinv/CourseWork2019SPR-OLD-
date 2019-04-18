@@ -34,10 +34,14 @@ int main(int argc, char *argv[]) {
 	bg.x = 0;
 	bg.y = 0;
 	SDL_FillRect(screen, &bg, 0x0d34f6);
+	bg.w = 6;
+	bg.h = max_y - 120;
+	bg.x = max_x / 2 - 1;
+	bg.y = 120;
 	HUD hud(screen);
-	Weapon weapon;
+	Weapon weapon(screen, max_x, max_y);
 	GameManager gm;
-
+	gm.setMoney(100);
 	Ship *ships = nullptr;
 	while (nextstep) // цикл перерисовки и обработки событий
 	{
@@ -60,7 +64,7 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_k) {
 				ships[1].setHealth(-1);
 				gm.setShipsLeft(gm.getShipsLeft() - 1);
-				gm.setMoney(gm.getMoney()+20);
+				gm.setMoney(gm.getMoney() + 20);
 			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT) {
 				gm.setShipsLeft(-1);
@@ -68,9 +72,11 @@ int main(int argc, char *argv[]) {
 		}
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
+		weapon.updateParticles();
 		if (gm.getShipsLeft() <= 0) {
 			gm.setWave(gm.getWave() + 1);
 			gm.setShipsLeft(gm.getWave() * 2);
+			weapon.reset(gm.getWave());
 			delete[] ships;
 			cout << "spwn: " << gm.getWave() * 2 << endl;
 			ships = new Ship[gm.getWave() * 2];
@@ -80,6 +86,7 @@ int main(int argc, char *argv[]) {
 		}
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		SDL_Delay(10); // нужно для замедления движения корабля
+		SDL_FillRect(screen, &bg, 0x0d34f6);
 	}
 	SDL_Quit();
 

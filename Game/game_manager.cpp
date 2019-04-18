@@ -16,7 +16,7 @@ void GameManager::setMoney(int mn) {
 GameManager::GameManager() {
 	money = 0;
 	wave=0;
-	actionZoneCleaner.h=150;
+	actionZoneCleaner.h=120;
 	actionZoneCleaner.w=1280;
 	shipsLeft=0;
 }
