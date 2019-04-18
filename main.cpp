@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
 	Ship *ships = nullptr;
 	while (nextstep) // цикл перерисовки и обработки событий
 	{
+
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
 		{
 			if (event.type == SDL_QUIT ||
@@ -56,18 +57,20 @@ int main(int argc, char *argv[]) {
 				if (gm.getMoney() < 0)
 					hud.drawText("CONgRAts Вас отчислили за растрату гос имущества", max_x / 2 - 200, max_y / 2);
 			}
-			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT) {
-				//
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_k) {
+				ships[1].setHealth(-1);
+				gm.setShipsLeft(gm.getShipsLeft() - 1);
 			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT) {
-				//
+				gm.setShipsLeft(-1);
 			}
 		}
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
-		if (gm.shipsLeft == 0) {
+		if (gm.getShipsLeft() <= 0) {
 			gm.setWave(gm.getWave() + 1);
-			gm.shipsLeft = gm.getWave() * 2;
+			gm.setShipsLeft(gm.getWave() * 2);
+			delete[] ships;
 			cout << "spwn: " << gm.getWave() * 2 << endl;
 			ships = new Ship[gm.getWave() * 2];
 		}
@@ -78,6 +81,6 @@ int main(int argc, char *argv[]) {
 		SDL_Delay(10); // нужно для замедления движения корабля
 	}
 	SDL_Quit();
-	delete[] ships;
+
 	return 0; /* Нормальное завершение */
 }

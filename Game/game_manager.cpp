@@ -32,3 +32,11 @@ void GameManager::setWave(int wv) {
 void GameManager::updateActionRect(SDL_Surface *screen) {
 	SDL_FillRect(screen,&actionZoneCleaner,0x0d34f6);
 }
+
+int GameManager::getShipsLeft() const {
+	return shipsLeft;
+}
+
+void GameManager::setShipsLeft(int shpsL) {
+	GameManager::shipsLeft = shpsL;
+}

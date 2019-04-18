@@ -12,10 +12,20 @@ typedef int TBD;
 
 class Ship {
 private:
-	SDL_Rect r, r_new, cleaner, tower, flag,* shipParts[3]{&r, &tower, &flag};
+	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower, &flag};
 
 	TBD movementSpeed;
 	int movementDirrection, health, price,max_x=1280,max_y=720;
+public:
+	int getHealth() const;
+
+	void setHealth(int health);
+
+	int getPrice() const;
+
+	void setPrice(int price);
+
+private:
 	char type;
 
 	void shipCheck();

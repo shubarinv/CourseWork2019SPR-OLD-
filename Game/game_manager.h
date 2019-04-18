@@ -11,7 +11,7 @@
 class GameManager {
 private:
 	int money,wave;
-
+	int shipsLeft=0;
 public:
 	int getWave() const;
 
@@ -20,7 +20,11 @@ public:
 	void setMoney(int money);
 	GameManager();
 	void updateActionRect(SDL_Surface *screen);
-	int shipsLeft=0;
+
+
+	int getShipsLeft() const;
+
+	void setShipsLeft(int shipsLeft);
 };
 
 
