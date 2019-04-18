@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_k) {
 				ships[1].setHealth(-1);
 				gm.setShipsLeft(gm.getShipsLeft() - 1);
+				gm.setMoney(gm.getMoney()+20);
 			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT) {
 				gm.setShipsLeft(-1);
