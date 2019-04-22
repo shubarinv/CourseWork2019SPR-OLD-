@@ -89,7 +89,7 @@ Ship::Ship() {
 }
 
 void Ship::reDraw(SDL_Surface *screen) {
-	if (health >= 0) {
+	if (health > 0) {
 		// расчет перемещения по горизонтали
 		r_new.x = r.x + movementDirrection * movementSpeed; // скорость перемещения и направление движения
 		// (на сколько пикселей смещаться за один шаг цикла)
@@ -99,11 +99,7 @@ void Ship::reDraw(SDL_Surface *screen) {
 		moveShip(shipParts, movementDirrection, movementSpeed);
 		drawShip(screen, &r, &tower, &flag);
 
-		//else throw("CANNOT draw");
 
-	}
-	else{
-		cout<<"kinda DeSpwned"<<endl;
 	}
 }
 
@@ -121,4 +117,13 @@ int Ship::getPrice() const {
 
 void Ship::setPrice(int prc) {
 	Ship::price = prc;
+}
+
+gameObject::coords Ship::getCoords() {
+	location.x1=shipParts[0]->x-25;
+	location.y1=shipParts[1]->y;
+	location.x2=shipParts[0]->x+25+shipParts[0]->w;
+	location.y2=shipParts[1]->y+shipParts[1]->h+shipParts[0]->h;
+
+	return location;
 }

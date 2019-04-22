@@ -3,6 +3,7 @@
 //
 
 #include <SDL/SDL_draw.h>
+#include <iostream>
 #include "particle.h"
 
 particle::particle() {
@@ -20,20 +21,42 @@ void particle::initl(SDL_Surface *scrn, int max_X, int max_Y) {
 }
 
 void particle::drawParticle() {
-	Sint32 base_color = 0xFFB533; // Основной цвет (желтый)
 
 	SDL_FillRect(screen, &particleBody, 0xFF0000);
 }
 
 void particle::moveParticle() {
-	if (particleBody.y > 0)
+	if (particleBody.y >= 4)
 		particleBody.y -= 3;
+	else
+		isOnScreen = false;
 
 }
 
 void particle::updateParticle() {
-	if (particleBody.y > 0) {
-		moveParticle();
-		drawParticle();
-	}
+	if (isOnScreen)
+		if (particleBody.y > 0) {
+			moveParticle();
+			drawParticle();
+		}
 }
+
+gameObject::coords particle::getLocation() {
+	if (isOnScreen) {
+		location.x1 = particleBody.x;
+		location.y1 = particleBody.y;
+		location.x2 = particleBody.x + particleBody.h;
+		location.y2 = particleBody.y + particleBody.w;
+	} else
+		location = {100000, 100000, 100000, 10000};
+	return location;
+}
+
+bool particle::getIsOnScreen() const {
+	return isOnScreen;
+}
+
+void particle::setIsOnScreen(bool bIsOnScreen) {
+	particle::isOnScreen = bIsOnScreen;
+}
+

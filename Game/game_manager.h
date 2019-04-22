@@ -23,7 +23,7 @@ public:
 
 
 	int getShipsLeft() const;
-
+	void checkForCollisions();
 	void setShipsLeft(int shipsLeft);
 };
 

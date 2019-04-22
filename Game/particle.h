@@ -7,12 +7,15 @@
 
 
 #include <SDL/SDL_video.h>
+#include "game_object.h"
 
-class particle {
+class particle :gameObject{
 public:
 	particle();
 	void updateParticle();
 	void initl(SDL_Surface *scrn, int max_X, int max_Y);
+	coords getLocation();
+
 private:
 	SDL_Rect particleBody;
 	int max_x, max_y;
@@ -22,7 +25,12 @@ private:
 
 	void moveParticle();
 
+	bool isOnScreen=true;
+public:
+	void setIsOnScreen(bool isOnScreen);
 
+public:
+	bool getIsOnScreen() const;
 };
 
 

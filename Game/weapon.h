@@ -8,7 +8,7 @@
 
 #include "particle.h"
 
-class Weapon {
+class Weapon:gameObject {
 private:
 	particle *particles;
 	int totalParticlesOnScreen = 0;
@@ -21,12 +21,13 @@ public:
 	void updateParticles();
 
 	void reset(int wave) {
-		particles = new particle[wave * 6 + 10];
-		for (int i = 0; i < wave * 6 + 10; ++i) {
+		particles = new particle[wave * 32 + 40];
+		for (int i = 0; i < wave * 32 + 40; ++i) {
 			particles[i].initl(screen, max_x, max_y);
 		}
 	}
 
+	int checkCollisions(coords);
 	Weapon(SDL_Surface *scrn, int max_x, int max_y);
 };
 
