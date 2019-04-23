@@ -8,6 +8,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_draw.h>
 #include <iostream>
+#include <caca_conio.h>
 #include "Game/ship.h"
 #include "Game/hud.h"
 #include "Game/game_manager.h"
@@ -29,7 +30,7 @@ int main(int argc, char *argv[]) {
 		SDL_Quit();
 		return 1; /* Выход с одним кодом ошибки */
 	}
-	SDL_WM_SetCaption( "Курсовая PRE_ALPHA 0001", NULL );
+	SDL_WM_SetCaption("Курсовая PRE_ALPHA 0001", NULL);
 	bg.w = max_x;
 	bg.h = max_y;
 	bg.x = 0;
@@ -45,10 +46,10 @@ int main(int argc, char *argv[]) {
 	gm.setMoney(100);
 	Ship *ships = nullptr;
 	//PlayerShip player;
-	while (nextstep) // цикл перерисовки и обработки событий
+	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
-		if (gm.getMoney() < -10)
-			throw;
+		if (gm.getMoney() < 0)
+			nextstep = -999;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
 		{
 			if (event.type == SDL_QUIT ||
@@ -58,8 +59,7 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
 				weapon.shoot();
 				gm.setMoney(gm.getMoney() - 10);
-				if (gm.getMoney() < 0)
-					hud.drawText("CONgRAts Вас отчислили за растрату гос имущества", max_x / 2 - 200, max_y / 2);
+
 			}
 		}
 		gm.updateActionRect(screen);
@@ -97,6 +97,24 @@ int main(int argc, char *argv[]) {
 		SDL_Delay(10); // нужно для замедления движения корабля
 		SDL_FillRect(screen, &bg, 0x0d34f6);
 	}
+	if (nextstep == -999) {
+		SDL_Rect gmOver;
+		gmOver.x = max_x / 2 - 300;
+		gmOver.y = max_y / 2 - 40;
+		gmOver.h = 80;
+		gmOver.w = 600;
+		SDL_FillRect(screen, &gmOver, 0xFF12121);
+		hud.drawText("GAME OVER!",max_x/2-40,max_y/2-10);
+		hud.drawText("Press ESC to Quit",max_x/2-55,max_y/2+40);
+		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		while (true)
+			if (SDL_PollEvent(&event))
+				if (event.type == SDL_QUIT ||(event.type == SDL_KEYDOWN &&event.key.keysym.sym == SDLK_ESCAPE))
+					break;
+
+
+	}
+
 
 	SDL_Quit();
 
