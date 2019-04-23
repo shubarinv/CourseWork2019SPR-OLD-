@@ -11,10 +11,10 @@ particle::particle() {
 }
 
 void particle::initl(SDL_Surface *scrn, int max_X, int max_Y) {
-	particleBody.x = max_X / 2;
+	particleBody.x = max_X / 2-1;
 	particleBody.y = max_Y;
-	particleBody.h = 4;
-	particleBody.w = 4;
+	particleBody.h = 6;
+	particleBody.w = 6;
 	max_x = max_X;
 	max_y = max_Y;
 	screen = scrn;

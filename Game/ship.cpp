@@ -18,7 +18,9 @@ int ranNum(int min, int max) {
 	return random_integer;
 }
 
-void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *ship_tower, SDL_Rect *flag) {
+int hp;
+
+void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *ship_tower, SDL_Rect *flag, int *hitLoc) {
 	Sint32 base_color = 0xFFB533; // Основной цвет (желтый)
 
 	Draw_Line(where_to_draw, shp->x, shp->y, shp->x - 25, shp->y, 0xFFB533);
@@ -29,6 +31,13 @@ void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *ship_tower, S
 	Draw_Line(where_to_draw, shp->x + 80, shp->y + shp->h - 1, shp->x + 105, shp->y + shp->h - 20, 0xFFB533);
 	Draw_Line(where_to_draw, shp->x + 30, shp->y + shp->h - 1, shp->x + 30, shp->y + shp->h - 100, 0xFFB533);
 	SDL_FillRect(where_to_draw, flag, 0xff7878);
+
+	for (int i = 0; i < hp / 20; ++i) {
+		if (hitLoc[i] == -999)
+			continue;
+		Draw_FillCircle(where_to_draw, hitLoc[i]+shp->x, shp->y+10, 10, 0xFC6600);
+	}
+
 
 }
 
@@ -80,11 +89,15 @@ Ship::Ship() {
 	flag.h = 15;
 	r_new = r;
 
-	health=100;
-
+	health = 100;
+	hitLoc = new int[health / 20];
+	for (int i = 0; i <health/20 ; ++i) {
+		hitLoc[i]=-999;
+	}
 	movementDirrection = ranNum(-1, 1);
 	if (movementDirrection == 0)movementDirrection = 1;
 	movementSpeed = ranNum(1, 3);
+	hp = health;
 	cout << "SPEEEEEEEEEEEEEED=" << movementSpeed << endl;
 }
 
@@ -97,7 +110,7 @@ void Ship::reDraw(SDL_Surface *screen) {
 		r = r_new; // обоновляем координаты
 
 		moveShip(shipParts, movementDirrection, movementSpeed);
-		drawShip(screen, &r, &tower, &flag);
+		drawShip(screen, &r, &tower, &flag, hitLoc);
 
 
 	}
@@ -120,10 +133,16 @@ void Ship::setPrice(int prc) {
 }
 
 gameObject::coords Ship::getCoords() {
-	location.x1=shipParts[0]->x-25;
-	location.y1=shipParts[1]->y;
-	location.x2=shipParts[0]->x+25+shipParts[0]->w;
-	location.y2=shipParts[1]->y+shipParts[1]->h+shipParts[0]->h;
+	location.x1 = shipParts[0]->x - 25;
+	location.y1 = shipParts[1]->y;
+	location.x2 = shipParts[0]->x + 25 + shipParts[0]->w;
+	location.y2 = shipParts[1]->y + shipParts[1]->h + shipParts[0]->h;
 
 	return location;
+}
+
+void Ship::spawnHit(int hlc) {
+	hitLoc[hitsTaken]=hlc-shipParts[0]->x;
+	cout<<"Hit loc"<<hlc<<endl;
+	hitsTaken++;
 }

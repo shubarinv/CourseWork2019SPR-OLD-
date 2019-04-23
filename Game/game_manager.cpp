@@ -3,6 +3,8 @@
 //
 
 #include "game_manager.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_draw.h>
 
 SDL_Rect actionZoneCleaner;
 int GameManager::getMoney() const {
@@ -30,7 +32,10 @@ void GameManager::setWave(int wv) {
 }
 
 void GameManager::updateActionRect(SDL_Surface *screen) {
-	SDL_FillRect(screen,&actionZoneCleaner,0x0d34f6);
+	SDL_FillRect(screen,&actionZoneCleaner,0x9ed3ff);
+	for (int i = 0; i < 1280; i+=20) {
+		Draw_FillCircle(screen,i,125,20,0x0d34f6);
+	}
 }
 
 int GameManager::getShipsLeft() const {

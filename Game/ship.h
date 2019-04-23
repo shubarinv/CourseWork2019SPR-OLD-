@@ -16,7 +16,8 @@ private:
 	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower, &flag};
 
 	TBD movementSpeed;
-	int movementDirrection, health, price,max_x=1280,max_y=720;
+	int movementDirrection, health, price,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
+
 public:
 	int getHealth() const;
 
@@ -25,6 +26,8 @@ public:
 	int getPrice() const;
 
 	void setPrice(int price);
+
+	void spawnHit(int);
 
 private:
 	char type;

@@ -12,11 +12,7 @@
 #include "Game/hud.h"
 #include "Game/game_manager.h"
 #include "Game/weapon.h"
-
-struct coords {
-	int x;
-	int y;
-};
+#include "Game/player_ship.h"
 
 int main(int argc, char *argv[]) {
 	SDL_Surface *screen; /* объявление указателя на поверхность: */
@@ -33,6 +29,7 @@ int main(int argc, char *argv[]) {
 		SDL_Quit();
 		return 1; /* Выход с одним кодом ошибки */
 	}
+	SDL_WM_SetCaption( "Курсовая PRE_ALPHA 0001", NULL );
 	bg.w = max_x;
 	bg.h = max_y;
 	bg.x = 0;
@@ -47,6 +44,7 @@ int main(int argc, char *argv[]) {
 	GameManager gm;
 	gm.setMoney(100);
 	Ship *ships = nullptr;
+	//PlayerShip player;
 	while (nextstep) // цикл перерисовки и обработки событий
 	{
 		if (gm.getMoney() < -10)
@@ -64,41 +62,43 @@ int main(int argc, char *argv[]) {
 					hud.drawText("CONgRAts Вас отчислили за растрату гос имущества", max_x / 2 - 200, max_y / 2);
 			}
 		}
-	gm.updateActionRect(screen);
-	hud.reDraw(gm.getMoney(), gm.getWave());
-	weapon.updateParticles();
+		gm.updateActionRect(screen);
+		hud.reDraw(gm.getMoney(), gm.getWave());
+		weapon.updateParticles();
 
-	//IF no ships left
-	if (gm.getShipsLeft() <= 0) {
-		gm.setWave(gm.getWave() + 1);
-		gm.setShipsLeft(gm.getWave() * 2);
-		weapon.reset(gm.getWave());
-		delete[] ships;
-		cout << "spwn: " << gm.getWave() * 2 << endl;
-		ships = new Ship[gm.getWave() * 2];
-	}
-
-	//Ships redraw
-	for (int j = 0; j < gm.getWave() * 2; ++j) {
-		if (ships[j].getHealth() > 0) {
-			int hits = weapon.checkCollisions(ships[j].getCoords());
-			ships[j].setHealth(ships[j].getHealth() - hits * 25);
-			gm.setMoney(gm.getMoney() + 15 * hits);
-			if (hits > 0) {
-				cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
-				cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
-				if (ships[j].getHealth() <= 0)
-					gm.setShipsLeft(gm.getShipsLeft() - 1);
-			}
-			ships[j].reDraw(screen);
+		//IF no ships left
+		if (gm.getShipsLeft() <= 0) {
+			gm.setWave(gm.getWave() + 1);
+			gm.setShipsLeft(gm.getWave() * 2);
+			weapon.reset(gm.getWave());
+			delete[] ships;
+			cout << "spwn: " << gm.getWave() * 2 << endl;
+			ships = new Ship[gm.getWave() * 2];
 		}
+
+		//Ships redraw
+		for (int j = 0; j < gm.getWave() * 2; ++j) {
+			if (ships[j].getHealth() > 0) {
+				int hits = weapon.checkCollisions(ships[j].getCoords());
+				ships[j].setHealth(ships[j].getHealth() - hits * 25);
+				gm.setMoney(gm.getMoney() + 15 * hits);
+				if (hits > 0) {
+
+					ships[j].spawnHit(weapon.getHitLoc());
+					cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
+					cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
+					if (ships[j].getHealth() <= 0)
+						gm.setShipsLeft(gm.getShipsLeft() - 1);
+				}
+				ships[j].reDraw(screen);
+			}
+		}
+		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		SDL_Delay(10); // нужно для замедления движения корабля
+		SDL_FillRect(screen, &bg, 0x0d34f6);
 	}
-	SDL_UpdateRect(screen, 0, 0, 1280, 720);
-	SDL_Delay(10); // нужно для замедления движения корабля
-	SDL_FillRect(screen, &bg, 0x0d34f6);
-}
 
-SDL_Quit();
+	SDL_Quit();
 
-return 0; /* Нормальное завершение */
+	return 0; /* Нормальное завершение */
 }

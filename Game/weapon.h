@@ -13,7 +13,11 @@ private:
 	particle *particles;
 	int totalParticlesOnScreen = 0;
 	SDL_Surface *screen;
-	int max_x, max_y;
+	int max_x, max_y,hitLoc=-999;
+public:
+	int getHitLoc() const;
+
+private:
 	SDL_Rect rb;
 public:
 	void shoot();
@@ -21,8 +25,10 @@ public:
 	void updateParticles();
 
 	void reset(int wave) {
-		particles = new particle[wave * 32 + 40];
-		for (int i = 0; i < wave * 32 + 40; ++i) {
+		delete(particles);
+		totalParticlesOnScreen=0;
+		particles = new particle[wave * 32 + 20];
+		for (int i = 0; i < wave * 32 + 20; ++i) {
 			particles[i].initl(screen, max_x, max_y);
 		}
 	}

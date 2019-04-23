@@ -10,7 +10,6 @@ using namespace std;
 
 
 void Weapon::shoot() {
-	cout << "Шпидяу" << endl;
 	totalParticlesOnScreen++;
 	Draw_Line(screen, max_x / 2, max_y - 10, max_x / 2, 50, 0x00);
 }
@@ -45,10 +44,16 @@ int Weapon::checkCollisions(gameObject::coords ship) {
 			if (ship.x1-particles[i].getLocation().x1<=0 && ship.x2 - particles[i].getLocation().x2>=0) {
 				if (ship.y1 - particles[i].getLocation().y1<=0 && ship.y2 - particles[i].getLocation().y2>= 0) {
 					totalHits++;
+					hitLoc=(particles[i].getLocation().x1+particles[i].getLocation().x2)/2;
 					particles[i].setIsOnScreen(false);
 				}
+
 			}
 		}
 	}
 	return totalHits;
+}
+
+int Weapon::getHitLoc() const {
+	return hitLoc;
 }
