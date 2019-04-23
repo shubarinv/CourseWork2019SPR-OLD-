@@ -120,3 +120,13 @@ int main(int argc, char *argv[]) {
 
 	return 0; /* Нормальное завершение */
 }
+/*
+ * Update 11 plan
+ * add player ship
+ * let player control it
+ */
+
+/*
+ * Update 12 plan
+ * attach weapon to ship
+ */
