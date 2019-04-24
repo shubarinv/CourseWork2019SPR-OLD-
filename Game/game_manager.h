@@ -10,7 +10,42 @@
 
 class GameManager {
 private:
-	int money,wave;
+	int money=0,wave=0;
+	int shots=0,missed=0,hits=0,killedShips=0;
+public:
+	int getShots() const {
+		return shots;
+	}
+
+	void setShots(int shots) {
+		GameManager::shots = shots;
+	}
+
+	int getMissed() const {
+		return missed;
+	}
+
+	void setMissed(int missed) {
+		GameManager::missed = missed;
+	}
+
+	int getHits() const {
+		return hits;
+	}
+
+	void setHits(int hits) {
+		GameManager::hits = hits;
+	}
+
+	int getKilledShips() const {
+		return killedShips;
+	}
+
+	void setKilledShips(int killedShips) {
+		GameManager::killedShips = killedShips;
+	}
+
+private:
 	int shipsLeft=0;
 public:
 	int getWave() const;
