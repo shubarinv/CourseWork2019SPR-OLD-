@@ -7,6 +7,7 @@
 #include <SDL/SDL_draw.h>
 
 SDL_Rect actionZoneCleaner;
+SDL_Rect playerZoneCleaner;
 int GameManager::getMoney() const {
 	return money;
 }
@@ -20,6 +21,9 @@ GameManager::GameManager() {
 	wave=0;
 	actionZoneCleaner.h=120;
 	actionZoneCleaner.w=1280;
+	playerZoneCleaner.h=40;
+	playerZoneCleaner.w=1280;
+	playerZoneCleaner.y=720-80;
 	shipsLeft=0;
 }
 
@@ -33,6 +37,8 @@ void GameManager::setWave(int wv) {
 
 void GameManager::updateActionRect(SDL_Surface *screen) {
 	SDL_FillRect(screen,&actionZoneCleaner,0x9ed3ff);
+
+	SDL_FillRect(screen,&playerZoneCleaner,0x9ed3ff);
 	for (int i = 0; i < 1280; i+=20) {
 		Draw_FillCircle(screen,i,125,20,0x0d34f6);
 	}

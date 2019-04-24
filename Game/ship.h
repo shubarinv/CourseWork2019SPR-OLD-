@@ -15,7 +15,7 @@ class Ship:gameObject{
 private:
 	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower, &flag};
 
-	TBD movementSpeed;
+	int movementSpeed;
 	int movementDirrection, health, price,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
 
 public:

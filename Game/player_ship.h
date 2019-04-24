@@ -6,14 +6,37 @@
 #define COURSEWORK_PLAYER_SHIP_H
 
 
+#include <SDL/SDL_video.h>
 #include "game_object.h"
 
 class PlayerShip : gameObject{
 private:
+	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower,&flag};
+
+	int movementSpeed;
+	int movementDirection, health,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
+public:
+	void setMovementSpeed(int movementSpeed);
+
+	void setMovementDirection(int movementDirection);
+
+private:
+	void moveShip();
+	void drawShip(SDL_Surface *);
 
 public:
-	void updateLocation(){}
+	int getHealth() const;
+
+	void setHealth(int health);
+
+	void spawnHit(int);
+
+public:
+	void reDraw(SDL_Surface*);
+	PlayerShip();
+	coords getCoords();
 };
+
 
 
 #endif //COURSEWORK_PLAYER_SHIP_H

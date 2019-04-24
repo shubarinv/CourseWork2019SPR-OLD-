@@ -64,9 +64,10 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 		for (int i = 0; i < 3; ++i) {
 			shipParts[i]->x = shipParts[i]->x - 1150;
 		}
+
 	}
 
-	if ((shipParts[0]->x < 100) && leftright == -1) {
+	if ((shipParts[0]->x < 0) && leftright == -1) {
 		for (int i = 0; i < 3; ++i) {
 			shipParts[i]->x = shipParts[i]->x + 1100;
 		}
@@ -199,3 +200,4 @@ void Ship::spawnHit(int hlc) {
 	cout << "Hit loc" << hlc << endl;
 	hitsTaken++;
 }
+

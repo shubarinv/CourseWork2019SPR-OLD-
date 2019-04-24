@@ -43,9 +43,9 @@ int main(int argc, char *argv[]) {
 	HUD hud(screen);
 	Weapon weapon(screen, max_x, max_y);
 	GameManager gm;
-	gm.setMoney(100);
+	gm.setMoney(60);
 	Ship *ships = nullptr;
-	//PlayerShip player;
+	PlayerShip player;
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
 		if (gm.getMoney() < 0)
@@ -58,8 +58,19 @@ int main(int argc, char *argv[]) {
 				nextstep = 0;
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
 				weapon.shoot();
-				gm.setMoney(gm.getMoney() - 10);
-
+				gm.setMoney(gm.getMoney() - 5);
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_DOWN) {
+				player.setMovementSpeed(0);
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_UP) {
+				player.setMovementSpeed(1);
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LEFT) {
+				player.setMovementDirection(-1);
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RIGHT) {
+				player.setMovementDirection(1);
 			}
 		}
 		gm.updateActionRect(screen);
@@ -93,23 +104,26 @@ int main(int argc, char *argv[]) {
 				ships[j].reDraw(screen);
 			}
 		}
+		player.reDraw(screen);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		SDL_Delay(10); // нужно для замедления движения корабля
 		SDL_FillRect(screen, &bg, 0x0d34f6);
 	}
+
+
 	if (nextstep == -999) {
 		SDL_Rect gmOver;
-		gmOver.x = max_x / 2 - 300;
-		gmOver.y = max_y / 2 - 40;
-		gmOver.h = 80;
-		gmOver.w = 600;
+		gmOver.x = max_x / 2 - 400;
+		gmOver.y = max_y / 2 - 60;
+		gmOver.h = 120;
+		gmOver.w = 800;
 		SDL_FillRect(screen, &gmOver, 0xFF12121);
-		hud.drawText("GAME OVER!",max_x/2-40,max_y/2-10);
-		hud.drawText("Press ESC to Quit",max_x/2-55,max_y/2+40);
+		hud.drawText("GAME OVER!", max_x / 2 - 40, max_y / 2 - 10);
+		hud.drawText("Press ESC to Quit", max_x / 2 - 55, max_y / 2 + 30);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		while (true)
 			if (SDL_PollEvent(&event))
-				if (event.type == SDL_QUIT ||(event.type == SDL_KEYDOWN &&event.key.keysym.sym == SDLK_ESCAPE))
+				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 					break;
 
 
@@ -129,4 +143,8 @@ int main(int argc, char *argv[]) {
 /*
  * Update 12 plan
  * attach weapon to ship
+ */
+
+/* Update 13 plan
+ * stats
  */

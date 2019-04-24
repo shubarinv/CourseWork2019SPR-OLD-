@@ -11,7 +11,7 @@ using namespace std;
 
 void Weapon::shoot() {
 	totalParticlesOnScreen++;
-	Draw_Line(screen, max_x / 2, max_y - 10, max_x / 2, 50, 0x00);
+//	Draw_Line(screen, max_x / 2, max_y - 10, max_x / 2, 50, 0x00);
 }
 
 Weapon::Weapon(SDL_Surface *scrn, int max_X, int max_Y) {
