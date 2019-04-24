@@ -13,8 +13,8 @@ particle::particle() {
 void particle::initl(SDL_Surface *scrn, int max_X, int max_Y) {
 	particleBody.x = max_X / 2-1;
 	particleBody.y = max_Y-50;
-	particleBody.h = 6;
-	particleBody.w = 6;
+	particleBody.h = 9;
+	particleBody.w = 4;
 	max_x = max_X;
 	max_y = max_Y;
 	screen = scrn;

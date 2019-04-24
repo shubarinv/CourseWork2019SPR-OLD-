@@ -55,6 +55,7 @@ public:
 	void setMoney(int money);
 	GameManager();
 	void updateActionRect(SDL_Surface *screen);
+	void updatePlayerRect(SDL_Surface *screen);
 
 
 	int getShipsLeft() const;

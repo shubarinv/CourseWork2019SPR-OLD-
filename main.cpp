@@ -16,7 +16,8 @@
 #include "Game/player_ship.h"
 
 int main(int argc, char *argv[]) {
-	SDL_Surface *screen; /* объявление указателя на поверхность: */
+	SDL_WM_SetCaption("Курсовая PRE_ALPHA 0014", nullptr);
+	SDL_Surface *screen, *playerArea, *actionArea, *neutralZone; /* объявление указателя на поверхность: */
 	SDL_Event event;
 	SDL_Rect bg;
 	Sint16 max_x, max_y;
@@ -24,20 +25,31 @@ int main(int argc, char *argv[]) {
 	max_x = 1280;
 	max_y = 720;
 	screen = SDL_SetVideoMode(max_x, max_y, 32,
-	                          SDL_ANYFORMAT);    /* инициализация библиотеки и установка видеорежима */
+	                          SDL_HWSURFACE | SDL_DOUBLEBUF);    /* инициализация библиотеки и установка видеорежима */
 	if (!screen) {
 		fprintf(stderr, "SDL mode failed: %s\n", SDL_GetError());
 		SDL_Quit();
 		return 1; /* Выход с одним кодом ошибки */
 	}
-	SDL_WM_SetCaption("Курсовая PRE_ALPHA 0001", NULL);
+
+	playerArea = SDL_CreateRGBSurface(SDL_HWSURFACE |
+	                                  SDL_DOUBLEBUF, max_x, 80, 16,
+	                                  screen->format->Rmask, screen->format->Gmask,
+	                                  screen->format->Bmask, screen->format->Amask);
+	actionArea = SDL_CreateRGBSurface(SDL_HWSURFACE |
+	                                  SDL_DOUBLEBUF, max_x, 120, 16,
+	                                  screen->format->Rmask, screen->format->Gmask,
+	                                  screen->format->Bmask, screen->format->Amask);
+	neutralZone = SDL_CreateRGBSurface(SDL_HWSURFACE |
+	                                   SDL_DOUBLEBUF, max_x, max_y-80, 8,
+	                                   screen->format->Rmask, screen->format->Gmask,
+	                                   screen->format->Bmask, screen->format->Amask);
+	if (!(playerArea && actionArea && neutralZone)) {
+		cout << "Unable to create temporary surfaces: %s\n" << SDL_GetError() << endl;
+		return -3;
+	}
 	bg.w = max_x;
 	bg.h = max_y;
-	bg.x = 0;
-	bg.y = 0;
-	SDL_FillRect(screen, &bg, 0x0d34f6);
-	bg.w = max_x;
-	bg.h = max_y - 200;
 	bg.x = 0;
 	bg.y = 120;
 	HUD hud(screen);
@@ -48,7 +60,11 @@ int main(int argc, char *argv[]) {
 	PlayerShip player;
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
-		SDL_FillRect(screen, &bg, 0x0d34f6);
+		SDL_FillRect(neutralZone, &bg, 0x0d34f6);
+		SDL_BlitSurface(neutralZone, nullptr,screen, nullptr);
+		SDL_BlitSurface(actionArea,nullptr,screen, nullptr);
+
+
 		if (gm.getMoney() < 0)
 			nextstep = -999;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
@@ -60,7 +76,7 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
 				weapon.shoot((player.getCoords().x1 + player.getCoords().x2) / 2);
 				gm.setMoney(gm.getMoney() - 5);
-				gm.setShots(gm.getShots()+1);
+				gm.setShots(gm.getShots() + 1);
 			}
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_DOWN) {
 				player.setMovementSpeed(0);
@@ -75,7 +91,7 @@ int main(int argc, char *argv[]) {
 				player.setMovementDirection(1);
 			}
 		}
-		gm.updateActionRect(screen);
+		gm.updateActionRect(actionArea);
 		hud.reDraw(gm.getMoney(), gm.getWave());
 		weapon.updateParticles();
 
@@ -96,25 +112,30 @@ int main(int argc, char *argv[]) {
 				ships[j].setHealth(ships[j].getHealth() - hits * 25);
 				gm.setMoney(gm.getMoney() + 15 * hits);
 				if (hits > 0) {
-					gm.setHits(gm.getHits()+hits);
+					gm.setHits(gm.getHits() + hits);
 					ships[j].spawnHit(weapon.getHitLoc());
 					cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
 					cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
-					if (ships[j].getHealth() <= 0){
+					if (ships[j].getHealth() <= 0) {
 						gm.setShipsLeft(gm.getShipsLeft() - 1);
-						gm.setKilledShips(gm.getKilledShips()+1);
+						gm.setKilledShips(gm.getKilledShips() + 1);
 					}
 				}
 				ships[j].reDraw(screen);
 			}
 		}
+		gm.updatePlayerRect(screen);
+
 		player.reDraw(screen);
+
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		SDL_Delay(10); // нужно для замедления движения корабля
 
 	}
 
 
+
+	/*-------------------------*/
 	if (nextstep == -999) {
 		SDL_Rect gmOver;
 		gmOver.x = max_x / 2 - 400;
@@ -134,13 +155,13 @@ int main(int argc, char *argv[]) {
 		gmOver.h = max_y;
 		gmOver.w = max_x;
 		SDL_FillRect(screen, &gmOver, 0x000000);
-		hud.drawText("Stats",max_x/2,70);
-		hud.drawText("Ships killed:  "+to_string(gm.getKilledShips()),100,100);
-		hud.drawText("Waves survived:  "+to_string(gm.getWave()),100,130);
-		hud.drawText("Hits:  "+to_string(gm.getHits()),100,160);
-		hud.drawText("Misses:  "+to_string(gm.getShots()-gm.getHits()),100,190);
-		hud.drawText("Accuracy:  "+to_string((float)gm.getHits()/(gm.getShots()-gm.getHits()))+"%",100,220);
-		hud.drawText("ESC to Quit",max_x/2-20,max_y-100);
+		hud.drawText("Stats", max_x / 2, 70);
+		hud.drawText("Ships killed:  " + to_string(gm.getKilledShips()), 100, 100);
+		hud.drawText("Waves survived:  " + to_string(gm.getWave()), 100, 130);
+		hud.drawText("Hits:  " + to_string(gm.getHits()), 100, 160);
+		hud.drawText("Misses:  " + to_string(gm.getShots() - gm.getHits()), 100, 190);
+		hud.drawText("Accuracy:  " + to_string((float) gm.getHits() / (gm.getShots() - gm.getHits())) + "%", 100, 220);
+		hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
 
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 
@@ -148,7 +169,6 @@ int main(int argc, char *argv[]) {
 			if (SDL_PollEvent(&event))
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 					break;
-
 
 	}
 
