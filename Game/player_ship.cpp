@@ -191,4 +191,8 @@ void PlayerShip::setMovementDirection(int movementDirection) {
 	PlayerShip::movementDirection = movementDirection;
 }
 
+int PlayerShip::getMovementDirection() const {
+	return movementDirection;
+}
+
 

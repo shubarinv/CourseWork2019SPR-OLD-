@@ -9,8 +9,9 @@
 using namespace std;
 
 
-void Weapon::shoot() {
+void Weapon::shoot(int x) {
 	totalParticlesOnScreen++;
+	particles[totalParticlesOnScreen-1].setLoc(x);
 //	Draw_Line(screen, max_x / 2, max_y - 10, max_x / 2, 50, 0x00);
 }
 

@@ -16,6 +16,9 @@ private:
 	int movementSpeed;
 	int movementDirection, health,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
 public:
+	int getMovementDirection() const;
+
+public:
 	void setMovementSpeed(int movementSpeed);
 
 	void setMovementDirection(int movementDirection);

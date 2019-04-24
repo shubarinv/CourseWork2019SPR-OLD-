@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 			     event.key.keysym.sym == SDLK_ESCAPE))
 				nextstep = 0;
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
-				weapon.shoot();
+				weapon.shoot((player.getCoords().x1+player.getCoords().x2)/2);
 				gm.setMoney(gm.getMoney() - 5);
 			}
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_DOWN) {

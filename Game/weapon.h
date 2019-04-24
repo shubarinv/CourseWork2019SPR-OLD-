@@ -20,7 +20,7 @@ public:
 private:
 	SDL_Rect rb;
 public:
-	void shoot();
+	void shoot(int);
 
 	void updateParticles();
 

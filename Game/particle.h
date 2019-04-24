@@ -15,6 +15,7 @@ public:
 	void updateParticle();
 	void initl(SDL_Surface *scrn, int max_X, int max_Y);
 	coords getLocation();
+	void setLoc(int x);
 
 private:
 	SDL_Rect particleBody;
@@ -31,6 +32,7 @@ public:
 
 public:
 	bool getIsOnScreen() const;
+
 };
 
 
