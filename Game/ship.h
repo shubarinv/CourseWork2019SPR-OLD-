@@ -17,6 +17,7 @@ private:
 
 	int movementSpeed;
 	int movementDirrection, health, price,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
+	int propSpeedLoc=0;
 
 public:
 	int getHealth() const;
@@ -38,6 +39,8 @@ public:
 	void reDraw(SDL_Surface*);
 	Ship();
 	coords getCoords();
+
+	void moveShip(SDL_Rect **shipParts, int leftright, int speed);
 };
 
 

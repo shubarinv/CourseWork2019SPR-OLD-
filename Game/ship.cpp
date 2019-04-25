@@ -41,7 +41,8 @@ void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *ship_tower, S
 
 }
 
-void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
+void Ship::moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
+
 	int ship_towerOffsetX = 0, ship_towerOffsetY = -20, flag_OffsetX = -20, flag_OffsetY = -50;
 	//Ship Tower
 	shipParts[1]->x = shipParts[0]->x + ship_towerOffsetX;
@@ -72,6 +73,12 @@ void moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 			shipParts[i]->x = shipParts[i]->x + 1100;
 		}
 	}
+	if(shipParts[0]->x==propSpeedLoc){
+		movementSpeed=ranNum(0,3);
+		propSpeedLoc=ranNum(100,600);
+		cout<<"Increase now at "<<propSpeedLoc<<endl;
+	}
+
 }
 
 Ship::Ship() {
@@ -99,6 +106,7 @@ Ship::Ship() {
 	if (movementDirrection == 0)movementDirrection = 1;
 	movementSpeed = ranNum(1, 3);
 	hp = health;
+	propSpeedLoc=ranNum(140,680);
 	if (movementSpeed == 3)
 		cout << "\n"
 		        "............................................   .  .......................................\n"
