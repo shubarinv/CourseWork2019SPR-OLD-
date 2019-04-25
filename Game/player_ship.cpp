@@ -25,14 +25,10 @@ int randNum(int min, int max) {
 int intlHp;
 
 void PlayerShip::drawShip(SDL_Surface *screen) {
-	Sint32 base_color = 0xFFB533; // Основной цвет (желтый)
 
 	SDL_FillRect(screen, shipParts[0], 0X0);
-
-	if (movementDirection == 1) {
-		Draw_FillCircle(screen, shipParts[0]->x, shipParts[0]->y + shipParts[0]->h / 2, 18, 0x000000);
-		Draw_FillCircle(screen, shipParts[0]->x+shipParts[0]->w, shipParts[0]->y + shipParts[0]->h / 2, 18, 0x000000);
-	}
+	Draw_FillCircle(screen, shipParts[0]->x, shipParts[0]->y + shipParts[0]->h / 2, 18, 0x000000);
+	Draw_FillCircle(screen, shipParts[0]->x + shipParts[0]->w, shipParts[0]->y + shipParts[0]->h / 2, 18, 0x000000);
 	for (int i = 0; i < intlHp / 20; ++i) {
 		if (hitLoc[i] == -999)
 			continue;
