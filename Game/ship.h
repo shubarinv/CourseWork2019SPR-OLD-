@@ -8,35 +8,33 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_draw.h>
 #include "game_object.h"
+#include "weapon.h"
 
-typedef int TBD;
 
 class Ship:gameObject{
 private:
 	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower, &flag};
 
 	int movementSpeed;
-	int movementDirrection, health, price,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
+	int movementDirrection, health,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
 	int propSpeedLoc=0;
+	SDL_Surface *screen;
 
 public:
+	void setWeapon(const Weapon &weapon);
+	Weapon weapon=Weapon(screen,1280,720, false);
+	void setScreen(SDL_Surface *screen);
+
 	int getHealth() const;
 
 	void setHealth(int health);
 
-	int getPrice() const;
-
-	void setPrice(int price);
 
 	void spawnHit(int);
 
-private:
-	char type;
-
-	void shipCheck();
 
 public:
-	void reDraw(SDL_Surface*);
+	void reDraw(coords);
 	Ship();
 	coords getCoords();
 

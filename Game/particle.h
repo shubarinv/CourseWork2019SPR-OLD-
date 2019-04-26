@@ -13,9 +13,10 @@ class particle :gameObject{
 public:
 	particle();
 	void updateParticle();
-	void initl(SDL_Surface *scrn, int max_X, int max_Y);
+	void initl(SDL_Surface *scrn, int max_X, int max_Y, bool b);
 	coords getLocation();
 	void setLoc(int x);
+	void setLoc(int x,int y);
 
 private:
 	SDL_Rect particleBody;
@@ -27,6 +28,8 @@ private:
 	void moveParticle();
 
 	bool isOnScreen=true;
+
+	bool isOwnedByPl;
 public:
 	void setIsOnScreen(bool isOnScreen);
 

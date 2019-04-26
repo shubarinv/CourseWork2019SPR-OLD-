@@ -10,14 +10,15 @@ particle::particle() {
 
 }
 
-void particle::initl(SDL_Surface *scrn, int max_X, int max_Y) {
-	particleBody.x = max_X / 2-1;
-	particleBody.y = max_Y-50;
+void particle::initl(SDL_Surface *scrn, int max_X, int max_Y, bool b) {
+	particleBody.x = max_X / 2 - 1;
+	particleBody.y = max_Y - 50;
 	particleBody.h = 9;
 	particleBody.w = 4;
 	max_x = max_X;
 	max_y = max_Y;
 	screen = scrn;
+	isOwnedByPl = b;
 }
 
 void particle::drawParticle() {
@@ -26,11 +27,18 @@ void particle::drawParticle() {
 }
 
 void particle::moveParticle() {
-	if (particleBody.y >= 4)
-		particleBody.y -= 3;
-	else
-		isOnScreen = false;
-
+	if (isOwnedByPl) {
+		if (particleBody.y >= 4)
+			particleBody.y -= 3;
+		else
+			isOnScreen = false;
+	}
+	else{
+		if (particleBody.y <= 716)
+			particleBody.y += 3;
+		else
+			isOnScreen = false;
+	}
 }
 
 void particle::updateParticle() {
@@ -61,6 +69,11 @@ void particle::setIsOnScreen(bool bIsOnScreen) {
 }
 
 void particle::setLoc(int i) {
-	particleBody.x=i;
+	particleBody.x = i;
+}
+
+void particle::setLoc(int x, int y) {
+	particleBody.x = x;
+	particleBody.y = y;
 }
 

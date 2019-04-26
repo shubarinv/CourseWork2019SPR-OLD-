@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
 	int nextstep = 1; /* для цикла обработки сообщений */
 	max_x = 1280;
 	max_y = 720;
-	screen = SDL_SetVideoMode(max_x, max_y, 32,
-	                          SDL_ANYFORMAT);    /* инициализация библиотеки и установка видеорежима */
+	screen = SDL_SetVideoMode(max_x, max_y, 16,
+	                          SDL_ANYFORMAT|SDL_DOUBLEBUF);    /* инициализация библиотеки и установка видеорежима */
 	if (!screen) {
 		fprintf(stderr, "SDL mode failed: %s\n", SDL_GetError());
 		SDL_Quit();
@@ -42,16 +42,16 @@ int main(int argc, char *argv[]) {
 	bg.x = 0;
 	bg.y = 120;
 	HUD hud(screen);
-	Weapon weapon(screen, max_x, max_y);
+	Weapon weapon(screen, max_x, max_y,true);
 	GameManager gm;
 	gm.setMoney(60);
 	Ship *ships = nullptr;
 	PlayerShip player;
 
 
-	int elapsed=0,current=0,timeSinceSecond=0,frames=0,next,avgFPS=60; //avgFPS - Avg fps per seconds
+	int elapsed = 0, current = 0, timeSinceSecond = 0, frames = 0, next, avgFPS = 100; //avgFPS - Avg fps per seconds
 
-	int framerate=60; // This is proposed FPS
+	int framerate = 60; // This is proposed FPS
 
 
 	while (nextstep > 0) // цикл перерисовки и обработки событий
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
 				weapon.shoot((player.getCoords().x1 + player.getCoords().x2) / 2);
 				gm.setMoney(gm.getMoney() - 5);
-				gm.setShots(gm.getShots()+1);
+				gm.setShots(gm.getShots() + 1);
 			}
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_DOWN) {
 				player.setMovementSpeed(0);
@@ -89,15 +89,18 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RIGHT) {
 				player.setMovementDirection(1);
 			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_p) {
+				nextstep = -30;
+			}
 		}
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
 		weapon.updateParticles();
 
-		hud.drawText("FPS: "+to_string(avgFPS),0,20);
-		if(timeSinceSecond >= 1000) {
+		hud.drawText("FPS: " + to_string(avgFPS), 0, 20);
+		if (timeSinceSecond >= 1000) {
 			timeSinceSecond = 0;
-			avgFPS=frames;
+			avgFPS = frames;
 			frames = 0;
 		}
 
@@ -109,6 +112,9 @@ int main(int argc, char *argv[]) {
 			delete[] ships;
 			cout << "spwn: " << gm.getWave() * 2 << endl;
 			ships = new Ship[gm.getWave() * 2];
+			for (int i = 0; i < gm.getWave()*2; ++i) {
+				ships[i].setScreen(screen);
+			}
 		}
 
 		//Ships redraw
@@ -118,24 +124,26 @@ int main(int argc, char *argv[]) {
 				ships[j].setHealth(ships[j].getHealth() - hits * 25);
 				gm.setMoney(gm.getMoney() + 15 * hits);
 				if (hits > 0) {
-					gm.setHits(gm.getHits()+hits);
+					gm.setHits(gm.getHits() + hits);
 					ships[j].spawnHit(weapon.getHitLoc());
 					cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
 					cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
-					if (ships[j].getHealth() <= 0){
+					if (ships[j].getHealth() <= 0) {
 						gm.setShipsLeft(gm.getShipsLeft() - 1);
-						gm.setKilledShips(gm.getKilledShips()+1);
+						gm.setKilledShips(gm.getKilledShips() + 1);
 					}
 				}
-				ships[j].reDraw(screen);
+				player.setHealth(player.getHealth()-ships[j].weapon.checkCollisions(player.getCoords())*25);
+				ships[j].reDraw(player.getCoords());
 			}
 		}
+
 		player.reDraw(screen);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 
 		next = SDL_GetTicks();
-		if(next - current < 1000.0 / framerate) {
-			SDL_Delay(1000.0 / framerate - (next - current));
+		if (next - current < 1000.0 / framerate) {
+			SDL_Delay(1000.f / framerate - (next - current));
 		}
 
 	}
@@ -152,21 +160,50 @@ int main(int argc, char *argv[]) {
 		hud.drawText("Press ESC to show stats", max_x / 2 - 95, max_y / 2 + 30);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		while (true)
-			if (SDL_PollEvent(&event))
-				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
-					break;
+			if (SDL_PollEvent(&event)) {
+				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+					SDL_FreeSurface(screen);
+					SDL_Quit();
+					return 10;
+				}
+				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p)) {
+					gmOver.x = 0;
+					gmOver.y = 0;
+					gmOver.h = max_y;
+					gmOver.w = max_x;
+					SDL_FillRect(screen, &gmOver, 0x000000);
+					hud.drawText("Stats", max_x / 2, 70);
+					hud.drawText("Ships killed:  " + to_string(gm.getKilledShips()), 100, 100);
+					hud.drawText("Waves survived:  " + to_string(gm.getWave()), 100, 130);
+					hud.drawText("Hits:  " + to_string(gm.getHits()), 100, 160);
+					hud.drawText("Misses:  " + to_string(gm.getShots() - gm.getHits()), 100, 190);
+					hud.drawText(
+							"Accuracy:  " + to_string((float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100) +
+							"%",
+							100,
+							220);
+					hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
+
+					SDL_UpdateRect(screen, 0, 0, 1280, 720);
+				}
+			}
+	}
+	if (nextstep == -30) {
+		SDL_Rect gmOver;
 		gmOver.x = 0;
 		gmOver.y = 0;
 		gmOver.h = max_y;
 		gmOver.w = max_x;
 		SDL_FillRect(screen, &gmOver, 0x000000);
-		hud.drawText("Stats",max_x/2,70);
-		hud.drawText("Ships killed:  "+to_string(gm.getKilledShips()),100,100);
-		hud.drawText("Waves survived:  "+to_string(gm.getWave()),100,130);
-		hud.drawText("Hits:  "+to_string(gm.getHits()),100,160);
-		hud.drawText("Misses:  "+to_string(gm.getShots()-gm.getHits()),100,190);
-		hud.drawText("Accuracy:  "+to_string((float)gm.getHits()/(gm.getShots()-gm.getHits())*100)+"%",100,220);
-		hud.drawText("ESC to Quit",max_x/2-20,max_y-100);
+		hud.drawText("Stats", max_x / 2, 70);
+		hud.drawText("Ships killed:  " + to_string(gm.getKilledShips()), 100, 100);
+		hud.drawText("Waves survived:  " + to_string(gm.getWave()), 100, 130);
+		hud.drawText("Hits:  " + to_string(gm.getHits()), 100, 160);
+		hud.drawText("Misses:  " + to_string(gm.getShots() - gm.getHits()), 100, 190);
+		hud.drawText("Accuracy:  " + to_string((float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100) + "%",
+		             100,
+		             220);
+		hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
 
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 

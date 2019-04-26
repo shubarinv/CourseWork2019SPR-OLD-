@@ -15,16 +15,17 @@ void Weapon::shoot(int x) {
 //	Draw_Line(screen, max_x / 2, max_y - 10, max_x / 2, 50, 0x00);
 }
 
-Weapon::Weapon(SDL_Surface *scrn, int max_X, int max_Y) {
+Weapon::Weapon(SDL_Surface *scrn, int max_X, int max_Y,bool bIsOwnedByPl) {
 	screen = scrn;
 	max_x = max_X;
 	max_y = max_Y;
 	rb.w = 4;
 	rb.h = 8;
 	totalParticlesOnScreen = 0;
+	bOwnedByPlayer=bIsOwnedByPl;
 	particles = new particle[2];
 	for (int i = 0; i < 2; ++i) {
-		particles[i].initl(screen, max_x, max_y);
+		particles[i].initl(screen, max_x, max_y, bOwnedByPlayer);
 	}
 }
 
@@ -57,4 +58,9 @@ int Weapon::checkCollisions(gameObject::coords ship) {
 
 int Weapon::getHitLoc() const {
 	return hitLoc;
+}
+
+void Weapon::shoot(int x, int y) {
+	totalParticlesOnScreen++;
+	particles[totalParticlesOnScreen-1].setLoc(x,y);
 }
