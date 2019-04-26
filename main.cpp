@@ -8,14 +8,15 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_draw.h>
 #include <iostream>
-#include <caca_conio.h>
 #include "Game/ship.h"
 #include "Game/hud.h"
 #include "Game/game_manager.h"
 #include "Game/weapon.h"
 #include "Game/player_ship.h"
 
+
 int main(int argc, char *argv[]) {
+
 	SDL_Surface *screen; /* объявление указателя на поверхность: */
 	SDL_Event event;
 	SDL_Rect bg;
@@ -46,9 +47,23 @@ int main(int argc, char *argv[]) {
 	gm.setMoney(60);
 	Ship *ships = nullptr;
 	PlayerShip player;
+
+
+	int elapsed=0,current=0,timeSinceSecond=0,frames=0,next,avgFPS=60; //avgFPS - Avg fps per seconds
+
+	int framerate=60; // This is proposed FPS
+
+
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
+		elapsed = SDL_GetTicks() - current;
+		current += elapsed;
+		timeSinceSecond += elapsed;
+
+		frames++;
 		SDL_FillRect(screen, &bg, 0x0d34f6);
+
+
 		if (gm.getMoney() < 0)
 			nextstep = -999;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
@@ -78,6 +93,13 @@ int main(int argc, char *argv[]) {
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
 		weapon.updateParticles();
+
+		hud.drawText("FPS: "+to_string(avgFPS),0,20);
+		if(timeSinceSecond >= 1000) {
+			timeSinceSecond = 0;
+			avgFPS=frames;
+			frames = 0;
+		}
 
 		//IF no ships left
 		if (gm.getShipsLeft() <= 0) {
@@ -110,7 +132,11 @@ int main(int argc, char *argv[]) {
 		}
 		player.reDraw(screen);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
-		SDL_Delay(10); // нужно для замедления движения корабля
+
+		next = SDL_GetTicks();
+		if(next - current < 1000.0 / framerate) {
+			SDL_Delay(1000.0 / framerate - (next - current));
+		}
 
 	}
 
@@ -152,7 +178,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-
+	SDL_FreeSurface(screen);
 	SDL_Quit();
 
 	return 0; /* Нормальное завершение */

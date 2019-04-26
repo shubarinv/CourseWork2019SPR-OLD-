@@ -47,7 +47,7 @@ void PlayerShip::moveShip() {
 	}
 	if ((shipParts[0]->x < 0) && movementDirection == -1) {
 		for (int i = 0; i < 3; ++i) {
-			shipParts[i]->x = shipParts[i]->x + 1100;
+			shipParts[i]->x = shipParts[i]->x + 1200;
 		}
 	}
 }

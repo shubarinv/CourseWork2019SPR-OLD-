@@ -74,7 +74,7 @@ void Ship::moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 		}
 	}
 	if(shipParts[0]->x==propSpeedLoc){
-		movementSpeed=ranNum(0,3);
+		movementSpeed=ranNum(1,3);
 		propSpeedLoc=ranNum(100,600);
 		cout<<"Increase now at "<<propSpeedLoc<<endl;
 	}
