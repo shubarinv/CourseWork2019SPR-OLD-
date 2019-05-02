@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
 		weapon.updateParticles();
 
 		hud.drawText("FPS: " + to_string(avgFPS), 0, 20);
+		hud.drawText("HP: "+to_string(player.getHealth()),1200,20);
 		if (timeSinceSecond >= 1000) {
 			timeSinceSecond = 0;
 			avgFPS = frames;

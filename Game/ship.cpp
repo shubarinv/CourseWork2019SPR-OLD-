@@ -127,9 +127,9 @@ void Ship::reDraw(coords shp) {
 		moveShip(shipParts, movementDirrection, movementSpeed);
 		drawShip(screen, &r, &tower, &flag, hitLoc);
 
-		if ((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2 >= 100 &&
-		    (shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2 <= 240) {
-			if (itr % 20 == 0)
+		if (abs((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2) >= 100 &&
+		    (abs((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2) <= 240)) {
+			if (itr % 40 == 0)
 				weapon.shoot((location.x1 + location.x2) / 2, (location.y1 + location.y2) / 2);
 
 		}
