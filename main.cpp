@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 	max_x = 1280;
 	max_y = 720;
 	screen = SDL_SetVideoMode(max_x, max_y, 16,
-	                          SDL_ANYFORMAT|SDL_DOUBLEBUF);    /* инициализация библиотеки и установка видеорежима */
+	                          SDL_ANYFORMAT | SDL_DOUBLEBUF);    /* инициализация библиотеки и установка видеорежима */
 	if (!screen) {
 		fprintf(stderr, "SDL mode failed: %s\n", SDL_GetError());
 		SDL_Quit();
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 	bg.x = 0;
 	bg.y = 120;
 	HUD hud(screen);
-	Weapon weapon(screen, max_x, max_y,true);
+	Weapon weapon(screen, max_x, max_y, true);
 	GameManager gm;
 	gm.setMoney(60);
 	Ship *ships = nullptr;
@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
 
 	int framerate = 60; // This is proposed FPS
 
+	int playerHit = 0;
 
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]) {
 		weapon.updateParticles();
 
 		hud.drawText("FPS: " + to_string(avgFPS), 0, 20);
-		hud.drawText("HP: "+to_string(player.getHealth()),1200,20);
+		hud.drawText("HP: " + to_string(player.getHealth()), 1200, 20);
 		if (timeSinceSecond >= 1000) {
 			timeSinceSecond = 0;
 			avgFPS = frames;
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
 			delete[] ships;
 			cout << "spwn: " << gm.getWave() * 2 << endl;
 			ships = new Ship[gm.getWave() * 2];
-			for (int i = 0; i < gm.getWave()*2; ++i) {
+			for (int i = 0; i < gm.getWave() * 2; ++i) {
 				ships[i].setScreen(screen);
 			}
 		}
@@ -131,10 +132,13 @@ int main(int argc, char *argv[]) {
 						gm.setKilledShips(gm.getKilledShips() + 1);
 					}
 				}
-				player.setHealth(player.getHealth()-ships[j].weapon.checkCollisions(player.getCoords())*25);
-				if(player.getHealth()<=0)
-					nextstep=-999;
+				playerHit = ships[j].weapon.checkCollisions(player.getCoords());
+				player.setHealth(player.getHealth() - playerHit * 25);
+				if (player.getHealth() <= 0)
+					nextstep = -999;
 				ships[j].reDraw(player.getCoords());
+				if (playerHit > 0)
+					player.spawnHit(ships[j].weapon.getHitLoc());
 			}
 		}
 
