@@ -89,9 +89,6 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RIGHT) {
 				player.setMovementDirection(1);
 			}
-			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_p) {
-				nextstep = -30;
-			}
 		}
 		gm.updateActionRect(screen);
 		hud.reDraw(gm.getMoney(), gm.getWave());
@@ -134,6 +131,8 @@ int main(int argc, char *argv[]) {
 					}
 				}
 				player.setHealth(player.getHealth()-ships[j].weapon.checkCollisions(player.getCoords())*25);
+				if(player.getHealth()<=0)
+					nextstep=-999;
 				ships[j].reDraw(player.getCoords());
 			}
 		}
