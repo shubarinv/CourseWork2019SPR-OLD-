@@ -112,8 +112,12 @@ Ship::Ship() {
 	cout << "SPEEEEEEEEEEEEEED=" << movementSpeed << endl;
 
 }
+
+long int itr = 0;
+
 void Ship::reDraw(coords shp) {
 	if (health > 0) {
+		itr++;
 		// расчет перемещения по горизонтали
 		r_new.x = r.x + movementDirrection * movementSpeed; // скорость перемещения и направление движения
 		// (на сколько пикселей смещаться за один шаг цикла)
@@ -122,8 +126,11 @@ void Ship::reDraw(coords shp) {
 
 		moveShip(shipParts, movementDirrection, movementSpeed);
 		drawShip(screen, &r, &tower, &flag, hitLoc);
-		if ((shp.x1 + shp.x2) / 2 - (r.x + r.w) / 2 == 110) {
-			weapon.shoot((r.x + r.w) / 2, (r.y + r.h) / 2);
+
+		if ((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2 >= 100 &&
+		    (shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2 <= 240) {
+			if (itr % 20 == 0)
+				weapon.shoot((location.x1 + location.x2) / 2, (location.y1 + location.y2) / 2);
 
 		}
 		weapon.updateParticles();
