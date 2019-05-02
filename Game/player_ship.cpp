@@ -104,9 +104,9 @@ void PlayerShip::setHealth(int hlth) {
 
 gameObject::coords PlayerShip::getCoords() {
 	location.x1 = shipParts[0]->x - 25;
-	location.y1 = shipParts[1]->y;
+	location.y1 = r.y;
 	location.x2 = shipParts[0]->x + 25 + shipParts[0]->w;
-	location.y2 = shipParts[1]->y + shipParts[1]->h + shipParts[0]->h;
+	location.y2 = r.y + r.h;
 
 	return location;
 }
