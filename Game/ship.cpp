@@ -75,6 +75,7 @@ void Ship::moveShip(SDL_Rect *shipParts[], int leftright, int speed) {
 	}
 	if (shipParts[0]->x == propSpeedLoc) {
 		movementSpeed = ranNum(1, 3);
+		maxSpeed=movementSpeed;
 		propSpeedLoc = ranNum(100, 600);
 		movementDirrection = ranNum(-1, 1);
 		if (movementDirrection == 0)movementDirrection = 1;
@@ -89,6 +90,7 @@ Ship::Ship() {
 	r.w = 80;
 	r.h = 20;
 
+	bAllowedToShoot = true;
 
 	tower.x = max_x / 2;
 	tower.y = max_y / 2;
@@ -107,6 +109,7 @@ Ship::Ship() {
 	movementDirrection = ranNum(-1, 1);
 	if (movementDirrection == 0)movementDirrection = 1;
 	movementSpeed = ranNum(1, 3);
+	maxSpeed=movementSpeed;
 	hp = health;
 	propSpeedLoc = ranNum(140, 680);
 	cout << "SPEEEEEEEEEEEEEED=" << movementSpeed << endl;
@@ -114,6 +117,7 @@ Ship::Ship() {
 }
 
 long int itr = 0;
+int shots = 0;
 
 void Ship::reDraw(coords shp) {
 	if (health > 0) {
@@ -127,10 +131,14 @@ void Ship::reDraw(coords shp) {
 		moveShip(shipParts, movementDirrection, movementSpeed);
 		drawShip(screen, &r, &tower, &flag, hitLoc);
 
-		if (abs((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2) >= 100 &&
+		if (abs((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2) >= 20 &&
 		    (abs((shp.x1 + shp.x2) / 2 - (location.x1 + location.x2) / 2) <= 240)) {
-			if (itr % 40 == 0)
-				weapon.shoot((location.x1 + location.x2) / 2, (location.y1 + location.y2) / 2);
+			if (itr % 40 == 0 && shots <= 84) {
+				if (isBAllowedToShoot()) {
+					weapon.shoot((location.x1 + location.x2) / 2, (location.y1 + location.y2) / 2);
+					shots++;
+				}
+			}
 
 		}
 		weapon.updateParticles();
@@ -164,11 +172,29 @@ void Ship::spawnHit(int hlc) {
 void Ship::setScreen(SDL_Surface *scrn) {
 	screen = scrn;
 	setWeapon(Weapon(screen, 1280, 720, false));
-	weapon.reset(1);
+	weapon.reset(2);
+	// total of 84 shots
 }
 
 void Ship::setWeapon(const Weapon &weapon) {
 	Ship::weapon = weapon;
+}
+
+bool Ship::isBAllowedToShoot() const {
+	return bAllowedToShoot;
+}
+
+void Ship::setBAllowedToShoot(bool AllowedToShoot) {
+	cout<<"Allowed to shoot is now: "<<AllowedToShoot<<endl;
+	Ship::bAllowedToShoot = AllowedToShoot;
+}
+
+void Ship::setMovementSpeed(int movementSpeed) {
+	Ship::movementSpeed = movementSpeed;
+}
+
+int Ship::getMaxSpeed() const {
+	return maxSpeed;
 }
 
 

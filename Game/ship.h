@@ -14,8 +14,21 @@
 class Ship:gameObject{
 private:
 	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower, &flag};
+	bool bAllowedToShoot;
+public:
+	bool isBAllowedToShoot() const;
 
-	int movementSpeed;
+	void setBAllowedToShoot(bool bAllowedToShoot);
+
+private:
+	int movementSpeed, maxSpeed;
+public:
+	int getMaxSpeed() const;
+
+public:
+	void setMovementSpeed(int movementSpeed);
+
+private:
 	int movementDirrection, health,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
 	int propSpeedLoc=0;
 	SDL_Surface *screen;

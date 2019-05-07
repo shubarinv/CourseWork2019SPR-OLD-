@@ -13,7 +13,18 @@ class PlayerShip : gameObject{
 private:
 	SDL_Rect r, r_new, tower, flag,* shipParts[3]{&r, &tower,&flag};
 
-	int movementSpeed;
+	int movementSpeed,maxMovementSpeed,maxHealth;
+public:
+	int getMaxHealth() const;
+
+	void setMaxHealth(int maxHealth);
+
+public:
+	int getMaxMovementSpeed() const;
+
+	void setMaxMovementSpeed(int maxMovementSpeed);
+
+private:
 	int movementDirection, health,max_x=1280,max_y=720, *hitLoc,hitsTaken=0;
 public:
 	int getMovementDirection() const;

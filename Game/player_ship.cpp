@@ -58,6 +58,8 @@ PlayerShip::PlayerShip() {
 	r.w = 90;
 	r.h = 35;
 
+	maxMovementSpeed = 1;
+	maxHealth = 100;
 
 	tower.x = max_x / 2;
 	tower.y = max_y / 2;
@@ -74,7 +76,10 @@ PlayerShip::PlayerShip() {
 		hitLoc[i] = -999;
 	}
 	movementDirection = 1;
+
 	movementSpeed = 1;
+	maxMovementSpeed = movementSpeed;
+
 	intlHp = health;
 }
 
@@ -88,8 +93,6 @@ void PlayerShip::reDraw(SDL_Surface *screen) {
 
 		moveShip();
 		drawShip(screen);
-
-
 	}
 }
 
@@ -127,6 +130,22 @@ void PlayerShip::setMovementDirection(int movementDirection) {
 
 int PlayerShip::getMovementDirection() const {
 	return movementDirection;
+}
+
+int PlayerShip::getMaxMovementSpeed() const {
+	return maxMovementSpeed;
+}
+
+void PlayerShip::setMaxMovementSpeed(int maxMovementSpeed) {
+	PlayerShip::maxMovementSpeed = maxMovementSpeed;
+}
+
+int PlayerShip::getMaxHealth() const {
+	return maxHealth;
+}
+
+void PlayerShip::setMaxHealth(int maxHealth) {
+	PlayerShip::maxHealth = maxHealth;
 }
 
 

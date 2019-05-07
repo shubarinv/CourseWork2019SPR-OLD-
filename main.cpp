@@ -36,11 +36,8 @@ int main(int argc, char *argv[]) {
 	bg.h = max_y;
 	bg.x = 0;
 	bg.y = 0;
-	SDL_FillRect(screen, &bg, 0x0d34f6);
-	bg.w = max_x;
-	bg.h = max_y - 200;
-	bg.x = 0;
-	bg.y = 120;
+	bool isInShop = false;
+	bool doOnce = true;
 	HUD hud(screen);
 	Weapon weapon(screen, max_x, max_y, true);
 	GameManager gm;
@@ -51,9 +48,32 @@ int main(int argc, char *argv[]) {
 
 	int elapsed = 0, current = 0, timeSinceSecond = 0, frames = 0, next, avgFPS = 100; //avgFPS - Avg fps per seconds
 
-	int framerate = 60; // This is proposed FPS
+	int framerate = 59; // This is proposed FPS
 
 	int playerHit = 0;
+
+	//Start Screen
+
+	SDL_FillRect(screen, &bg, 0xFFFFFF);
+	Draw_FillRect(screen, static_cast<Sint16>(max_x / 2 - 120), 180, 250, 60, 0x000);
+	hud.drawText("Start new game", max_x / 2 - 65, 200);
+	Draw_FillRect(screen, static_cast<Sint16>(max_x / 2 - 120), 280, 250, 60, 0x000);
+	hud.drawText("Leaderboard", max_x / 2 - 50, 300);
+	Draw_FillRect(screen, static_cast<Sint16>(max_x / 2 - 120), 380, 250, 60, 0x000);
+	hud.drawText("Quit", max_x / 2 - 15, 400);
+	SDL_UpdateRect(screen, 0, 0, 1280, 720);
+	SDL_Delay(1000);
+
+
+
+
+	// THIS IS GAME IT SELF
+
+	SDL_FillRect(screen, &bg, 0x0d34f6);
+	bg.w = max_x;
+	bg.h = max_y - 200;
+	bg.x = 0;
+	bg.y = 120;
 
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
@@ -66,7 +86,7 @@ int main(int argc, char *argv[]) {
 
 
 		if (gm.getMoney() < 0)
-			nextstep = -999;
+			nextstep = -30;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
 		{
 			if (event.type == SDL_QUIT ||
@@ -82,7 +102,7 @@ int main(int argc, char *argv[]) {
 				player.setMovementSpeed(0);
 			}
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_UP) {
-				player.setMovementSpeed(1);
+				player.setMovementSpeed(player.getMaxMovementSpeed());
 			}
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LEFT) {
 				player.setMovementDirection(-1);
@@ -90,61 +110,132 @@ int main(int argc, char *argv[]) {
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RIGHT) {
 				player.setMovementDirection(1);
 			}
-		}
-		gm.updateActionRect(screen);
-		hud.reDraw(gm.getMoney(), gm.getWave());
-		weapon.updateParticles();
-
-		hud.drawText("FPS: " + to_string(avgFPS), 0, 20);
-		hud.drawText("HP: " + to_string(player.getHealth()), 1200, 20);
-		if (timeSinceSecond >= 1000) {
-			timeSinceSecond = 0;
-			avgFPS = frames;
-			frames = 0;
-		}
-
-		//IF no ships left
-		if (gm.getShipsLeft() <= 0) {
-			gm.setWave(gm.getWave() + 1);
-			gm.setShipsLeft(gm.getWave() * 2);
-			weapon.reset(gm.getWave());
-			delete[] ships;
-			cout << "spwn: " << gm.getWave() * 2 << endl;
-			ships = new Ship[gm.getWave() * 2];
-			for (int i = 0; i < gm.getWave() * 2; ++i) {
-				ships[i].setScreen(screen);
-			}
-		}
-
-		//Ships redraw
-		for (int j = 0; j < gm.getWave() * 2; ++j) {
-			if (ships[j].getHealth() > 0) {
-				int hits = weapon.checkCollisions(ships[j].getCoords());
-				ships[j].setHealth(ships[j].getHealth() - hits * 25);
-				gm.setMoney(gm.getMoney() + 15 * hits);
-				if (hits > 0) {
-					gm.setHits(gm.getHits() + hits);
-					ships[j].spawnHit(weapon.getHitLoc());
-					cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
-					cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
-					if (ships[j].getHealth() <= 0) {
-						gm.setShipsLeft(gm.getShipsLeft() - 1);
-						gm.setKilledShips(gm.getKilledShips() + 1);
-					}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_b) {
+				for (int j = 0; j < gm.getWave() * 2; ++j) {
+					ships[j].setBAllowedToShoot(false);
+					ships[j].setMovementSpeed(0);
+					player.setMovementSpeed(0);
+					isInShop = true;
 				}
-				playerHit = ships[j].weapon.checkCollisions(player.getCoords());
-				player.setHealth(player.getHealth() - playerHit * 25);
-				if (player.getHealth() <= 0)
-					nextstep = -999;
-				ships[j].reDraw(player.getCoords());
-				if (playerHit > 0)
-					player.spawnHit(ships[j].weapon.getHitLoc());
 			}
 		}
+		if (isInShop) {
+			//There should be code that displays shop menu
+			// but until this moment this will do
+			if (doOnce) {
+				cout << "= TMP SHOP =" << endl
+				     << "1)Increase ship speed (200)\n2)Restore health to max (300)\n3)Increase max health(1000)\n4)Quit"
+				     << endl;
+				doOnce = false;
+			}
 
-		player.reDraw(screen);
-		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_1) {
+				if ((gm.getMoney() - 200) >= 0) {
+					gm.setMoney(gm.getMoney() - 200);
+					player.setMaxMovementSpeed(player.getMaxMovementSpeed() + 1);
+					isInShop = false;
+					player.setMovementSpeed(player.getMaxMovementSpeed());
+					for (int j = 0; j < gm.getWave() * 2; ++j) {
+						ships[j].setMovementSpeed(ships[j].getMaxSpeed());
+					}
+					doOnce = true;
+				} else
+					cout << "NOT ENOUGH MONEY!" << endl;
 
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_2) {
+
+				if ((gm.getMoney() - 300) >= 0) {
+					gm.setMoney(gm.getMoney() - 300);
+					player.setHealth(player.getMaxHealth());
+					isInShop = false;
+					player.setMovementSpeed(player.getMaxMovementSpeed());
+					for (int j = 0; j < gm.getWave() * 2; ++j) {
+						ships[j].setMovementSpeed(ships[j].getMaxSpeed());
+					}
+					doOnce = true;
+				} else
+					cout << "NOT ENOUGH MONEY!" << endl;
+
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_3) {
+				if ((gm.getMoney() - 1000) >= 0) {
+					player.setMaxHealth(player.getMaxHealth() + 100);
+					gm.setMoney(gm.getMoney() - 1000);
+					isInShop = false;
+					player.setMovementSpeed(player.getMaxMovementSpeed());
+					for (int j = 0; j < gm.getWave() * 2; ++j) {
+						ships[j].setMovementSpeed(ships[j].getMaxSpeed());
+					}
+					doOnce = true;
+				} else
+					cout << "NOT ENOUGH MONEY!" << endl;
+			}
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_4) {
+				isInShop = false;
+				player.setMovementSpeed(player.getMaxMovementSpeed());
+				for (int j = 0; j < gm.getWave() * 2; ++j) {
+					ships[j].setMovementSpeed(ships[j].getMaxSpeed());
+				}
+				doOnce = true;
+
+			}
+		} else {
+			gm.updateActionRect(screen);
+			hud.reDraw(gm.getMoney(), gm.getWave());
+			weapon.updateParticles();
+
+			hud.drawText("FPS: " + to_string(avgFPS), 0, 20);
+			hud.drawText("HP: " + to_string(player.getHealth()), 1200, 20);
+			if (timeSinceSecond >= 1000) {
+				timeSinceSecond = 0;
+				avgFPS = frames;
+				frames = 0;
+			}
+
+			//IF no ships left aka next wave
+			if (gm.getShipsLeft() <= 0) {
+				gm.setWave(gm.getWave() + 1);
+				gm.setShipsLeft(gm.getWave() * 2);
+				weapon.reset(gm.getWave());
+				delete[] ships;
+				cout << "spwn: " << gm.getWave() * 2 << endl;
+				ships = new Ship[gm.getWave() * 2];
+				for (int i = 0; i < gm.getWave() * 2; ++i) {
+					ships[i].setScreen(screen);
+				}
+				player.setHealth(player.getHealth()+25);
+			}
+
+			//Ships redraw
+			for (int j = 0; j < gm.getWave() * 2; ++j) {
+				if (ships[j].getHealth() > 0) {
+					int hits = weapon.checkCollisions(ships[j].getCoords());
+					ships[j].setHealth(ships[j].getHealth() - hits * 25);
+					gm.setMoney(gm.getMoney() + 15 * hits);
+					if (hits > 0) {
+						gm.setHits(gm.getHits() + hits);
+						ships[j].spawnHit(weapon.getHitLoc());
+						cout << "Ship: " << j << "\t" << "Hits: " << hits << endl;
+						cout << "Ship: " << j << "HP: " << ships[j].getHealth() << endl;
+						if (ships[j].getHealth() <= 0) {
+							gm.setShipsLeft(gm.getShipsLeft() - 1);
+							gm.setKilledShips(gm.getKilledShips() + 1);
+						}
+					}
+					playerHit = ships[j].weapon.checkCollisions(player.getCoords());
+					player.setHealth(player.getHealth() - playerHit * 25);
+					if (player.getHealth() <= 0)
+						nextstep = -999;
+					ships[j].reDraw(player.getCoords());
+					if (playerHit > 0)
+						player.spawnHit(ships[j].weapon.getHitLoc());
+				}
+			}
+
+			player.reDraw(screen);
+			SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		}
 		next = SDL_GetTicks();
 		if (next - current < 1000.0 / framerate) {
 			SDL_Delay(1000.f / framerate - (next - current));
