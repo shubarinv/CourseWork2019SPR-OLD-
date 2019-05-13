@@ -62,7 +62,25 @@ int main(int argc, char *argv[]) {
 	Draw_FillRect(screen, static_cast<Sint16>(max_x / 2 - 120), 380, 250, 60, 0x000);
 	hud.drawText("Quit", max_x / 2 - 15, 400);
 	SDL_UpdateRect(screen, 0, 0, 1280, 720);
-	SDL_Delay(1000);
+	int mouseX, mouseY;
+	while (true) {
+		SDL_PollEvent(&event);
+		SDL_GetMouseState(&mouseX, &mouseY);
+		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 180) && (mouseY < 240) &&
+		    (event.type == SDL_MOUSEBUTTONDOWN)) {
+			break;
+		}
+		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 280) && (mouseY < 340) &&
+		    (event.type == SDL_MOUSEBUTTONDOWN)) {
+			nextstep=-30;
+			break;
+		}
+		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 380) && (mouseY < 440) &&
+		    (event.type == SDL_MOUSEBUTTONDOWN)) {
+			nextstep=0;
+			break;
+		}
+	}
 
 
 
@@ -75,6 +93,7 @@ int main(int argc, char *argv[]) {
 	bg.x = 0;
 	bg.y = 120;
 
+
 	while (nextstep > 0) // цикл перерисовки и обработки событий
 	{
 		elapsed = SDL_GetTicks() - current;
@@ -83,8 +102,6 @@ int main(int argc, char *argv[]) {
 
 		frames++;
 		SDL_FillRect(screen, &bg, 0x0d34f6);
-
-
 		if (gm.getMoney() < 0)
 			nextstep = -30;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
@@ -204,7 +221,7 @@ int main(int argc, char *argv[]) {
 				for (int i = 0; i < gm.getWave() * 2; ++i) {
 					ships[i].setScreen(screen);
 				}
-				player.setHealth(player.getHealth()+25);
+				player.setHealth(player.getHealth() + 25);
 			}
 
 			//Ships redraw
@@ -315,17 +332,3 @@ int main(int argc, char *argv[]) {
 
 	return 0; /* Нормальное завершение */
 }
-/*
- * Update 11 plan
- * add player ship
- * let player control it
- */
-
-/*
- * Update 12 plan
- * attach weapon to ship
- */
-
-/* Update 13 plan
- * stats
- */
