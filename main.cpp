@@ -8,6 +8,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_draw.h>
 #include <iostream>
+#include <fstream>
 #include "Game/ship.h"
 #include "Game/hud.h"
 #include "Game/game_manager.h"
@@ -45,6 +46,9 @@ int main(int argc, char *argv[]) {
 	Ship *ships = nullptr;
 	PlayerShip player;
 
+	string playerName;
+	cout<<"Player Name: ";
+	cin>>playerName;
 
 	int elapsed = 0, current = 0, timeSinceSecond = 0, frames = 0, next, avgFPS = 100; //avgFPS - Avg fps per seconds
 
@@ -84,7 +88,6 @@ int main(int argc, char *argv[]) {
 
 
 
-
 	// THIS IS GAME IT SELF
 
 	SDL_FillRect(screen, &bg, 0x0d34f6);
@@ -103,7 +106,7 @@ int main(int argc, char *argv[]) {
 		frames++;
 		SDL_FillRect(screen, &bg, 0x0d34f6);
 		if (gm.getMoney() < 0)
-			nextstep = -30;
+			nextstep = -999;
 		if (SDL_PollEvent(&event)) // проверяем нажатие клавиш на клавиатуре
 		{
 			if (event.type == SDL_QUIT ||
@@ -268,35 +271,19 @@ int main(int argc, char *argv[]) {
 		gmOver.h = 120;
 		gmOver.w = 800;
 		SDL_FillRect(screen, &gmOver, 0xFF12121);
-		hud.drawText("GAME OVER!", max_x / 2 - 40, max_y / 2 - 10);
-		hud.drawText("Press ESC to show stats", max_x / 2 - 95, max_y / 2 + 30);
+		hud.drawText("GAME OVER!", max_x / 2 - 40, max_y / 2-20);
+		hud.drawText("Press ESC to Quit", max_x / 2 - 95, max_y / 2 + 10);
+		hud.drawText("Press Enter to show Stats", max_x / 2 - 95, max_y / 2 + 30);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		while (true)
 			if (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-					SDL_FreeSurface(screen);
-					SDL_Quit();
-					return 10;
+					nextstep=0;
+					break;
 				}
-				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p)) {
-					gmOver.x = 0;
-					gmOver.y = 0;
-					gmOver.h = max_y;
-					gmOver.w = max_x;
-					SDL_FillRect(screen, &gmOver, 0x000000);
-					hud.drawText("Stats", max_x / 2, 70);
-					hud.drawText("Ships killed:  " + to_string(gm.getKilledShips()), 100, 100);
-					hud.drawText("Waves survived:  " + to_string(gm.getWave()), 100, 130);
-					hud.drawText("Hits:  " + to_string(gm.getHits()), 100, 160);
-					hud.drawText("Misses:  " + to_string(gm.getShots() - gm.getHits()), 100, 190);
-					hud.drawText(
-							"Accuracy:  " + to_string((float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100) +
-							"%",
-							100,
-							220);
-					hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
-
-					SDL_UpdateRect(screen, 0, 0, 1280, 720);
+				if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_KP_ENTER) {
+					nextstep=-30;
+					break;
 				}
 			}
 	}
@@ -318,12 +305,24 @@ int main(int argc, char *argv[]) {
 		hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
 
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
-
+		ofstream file;
+		file.open("LeaderBoard", std::ios_base::app);
+		file<<playerName<<" "<<(float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100<<" "<<gm.getWave()<<" "<<gm.getKilledShips()<<'\n';
+		file.close();
 		while (true)
 			if (SDL_PollEvent(&event))
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 					break;
 
+
+	}
+	if(nextstep==-20){
+		SDL_Rect gmOver;
+		gmOver.x = 0;
+		gmOver.y = 0;
+		gmOver.h = max_y;
+		gmOver.w = max_x;
+		SDL_FillRect(screen, &gmOver, 0x000000);
 
 	}
 
