@@ -47,8 +47,8 @@ int main(int argc, char *argv[]) {
 	PlayerShip player;
 
 	string playerName;
-	cout<<"Player Name: ";
-	cin>>playerName;
+	cout << "Player Name: ";
+	cin >> playerName;
 
 	int elapsed = 0, current = 0, timeSinceSecond = 0, frames = 0, next, avgFPS = 100; //avgFPS - Avg fps per seconds
 
@@ -76,12 +76,12 @@ int main(int argc, char *argv[]) {
 		}
 		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 280) && (mouseY < 340) &&
 		    (event.type == SDL_MOUSEBUTTONDOWN)) {
-			nextstep=-30;
+			nextstep = -30;
 			break;
 		}
 		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 380) && (mouseY < 440) &&
 		    (event.type == SDL_MOUSEBUTTONDOWN)) {
-			nextstep=0;
+			nextstep = 0;
 			break;
 		}
 	}
@@ -271,22 +271,23 @@ int main(int argc, char *argv[]) {
 		gmOver.h = 120;
 		gmOver.w = 800;
 		SDL_FillRect(screen, &gmOver, 0xFF12121);
-		hud.drawText("GAME OVER!", max_x / 2 - 40, max_y / 2-20);
+		hud.drawText("GAME OVER!", max_x / 2 - 40, max_y / 2 - 20);
 		hud.drawText("Press ESC to Quit", max_x / 2 - 95, max_y / 2 + 10);
 		hud.drawText("Press Enter to show Stats", max_x / 2 - 95, max_y / 2 + 30);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 		ofstream file;
 		file.open("LeaderBoard", std::ios_base::app);
-		file<<playerName<<" "<<(float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100<<" "<<gm.getWave()<<" "<<gm.getKilledShips()<<'\n';
+		file << playerName << "                            " << (float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100 << "                " << gm.getWave()
+		     << "                " << gm.getKilledShips() << '\n';
 		file.close();
 		while (true)
 			if (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-					nextstep=0;
+					nextstep = 0;
 					break;
 				}
 				if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_KP_ENTER) {
-					nextstep=-30;
+					nextstep = -30;
 					break;
 				}
 			}
@@ -311,20 +312,39 @@ int main(int argc, char *argv[]) {
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
 
 		while (true)
-			if (SDL_PollEvent(&event))
+			if (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 					break;
-
+				if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_KP_ENTER) {
+					nextstep = -20;
+					break;
+				}
+			}
 
 	}
-	if(nextstep==-20){
+	if (nextstep == -20) {
 		SDL_Rect gmOver;
 		gmOver.x = 0;
 		gmOver.y = 0;
 		gmOver.h = max_y;
 		gmOver.w = max_x;
 		SDL_FillRect(screen, &gmOver, 0x000000);
+		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		ifstream file;
+		file.open("LeaderBoard");
+		string PlayerName, str;
+		int i = 0;
+		while (getline(file, str)) {
+			i++;
+			hud.drawText(str, 10, 10 + i * 20);
+			SDL_UpdateRect(screen, 0, 0, 1280, 720);
 
+		}
+		while (true)
+			if (SDL_PollEvent(&event)) {
+				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
+					break;
+			}
 	}
 
 	SDL_FreeSurface(screen);
