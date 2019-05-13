@@ -275,6 +275,10 @@ int main(int argc, char *argv[]) {
 		hud.drawText("Press ESC to Quit", max_x / 2 - 95, max_y / 2 + 10);
 		hud.drawText("Press Enter to show Stats", max_x / 2 - 95, max_y / 2 + 30);
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
+		ofstream file;
+		file.open("LeaderBoard", std::ios_base::app);
+		file<<playerName<<" "<<(float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100<<" "<<gm.getWave()<<" "<<gm.getKilledShips()<<'\n';
+		file.close();
 		while (true)
 			if (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
@@ -305,10 +309,7 @@ int main(int argc, char *argv[]) {
 		hud.drawText("ESC to Quit", max_x / 2 - 20, max_y - 100);
 
 		SDL_UpdateRect(screen, 0, 0, 1280, 720);
-		ofstream file;
-		file.open("LeaderBoard", std::ios_base::app);
-		file<<playerName<<" "<<(float) gm.getHits() / (gm.getShots() - gm.getHits()) * 100<<" "<<gm.getWave()<<" "<<gm.getKilledShips()<<'\n';
-		file.close();
+
 		while (true)
 			if (SDL_PollEvent(&event))
 				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
