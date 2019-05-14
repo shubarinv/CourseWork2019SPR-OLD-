@@ -35,7 +35,13 @@ void drawShip(SDL_Surface *where_to_draw, SDL_Rect *shp, SDL_Rect *ship_tower, S
 	for (int i = 0; i < hp / 20; ++i) {
 		if (hitLoc[i] == -999)
 			continue;
-		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 10, 0xFC6600);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 10, 0xff1100);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 9, 0xff2f00);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 8, 0xff4400);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 7, 0xff7e14);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 6, 0xffaa3b);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 5, 0xffba52);
+		Draw_FillCircle(where_to_draw, hitLoc[i] + shp->x, shp->y + 10, 4, 0xfcde65);
 	}
 
 

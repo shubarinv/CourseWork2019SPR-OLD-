@@ -47,8 +47,7 @@ int main(int argc, char *argv[]) {
 	PlayerShip player;
 
 	string playerName;
-	cout << "Player Name: ";
-	cin >> playerName;
+
 
 	int elapsed = 0, current = 0, timeSinceSecond = 0, frames = 0, next, avgFPS = 100; //avgFPS - Avg fps per seconds
 
@@ -76,7 +75,7 @@ int main(int argc, char *argv[]) {
 		}
 		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 280) && (mouseY < 340) &&
 		    (event.type == SDL_MOUSEBUTTONDOWN)) {
-			nextstep = -30;
+			nextstep = -20;
 			break;
 		}
 		if ((mouseX > max_x / 2 - 120) && (mouseX < max_x / 2 + 130) && (mouseY > 380) && (mouseY < 440) &&

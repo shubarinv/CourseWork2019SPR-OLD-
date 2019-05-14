@@ -32,7 +32,13 @@ void PlayerShip::drawShip(SDL_Surface *screen) {
 	for (int i = 0; i < intlHp / 20; ++i) {
 		if (hitLoc[i] == -999)
 			continue;
-		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 10, 0xFC6600);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 10, 0xff1100);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 9, 0xff2f00);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 8, 0xff4400);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 7, 0xff7e14);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 6, 0xffaa3b);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 5, 0xffba52);
+		Draw_FillCircle(screen, hitLoc[i] + shipParts[0]->x, shipParts[0]->y, 4, 0xfcde65);
 	}
 
 
