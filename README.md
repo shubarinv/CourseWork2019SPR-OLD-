@@ -1,2 +1,3 @@
 # CourseWork2019SPR-OLD-
-Устаревшая версия курсовой, новая находится по адресу https://github.com/vhundef/SPRCourseWork2019.git
+## Эта версия курсовой не актуальна!
+## Новая версия находится по адресу: https://github.com/vhundef/SPRCourseWork2019 
